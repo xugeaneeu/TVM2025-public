@@ -1,0 +1,18 @@
+{
+    "name": "lab07",
+    "version": "1.0.0",
+    "description": "",
+    "main": "out/index.js",
+    "type": "commonjs",
+    "files": [
+        "out/**/*.js",
+        "out/**/*.d.ts"
+    ],
+    "scripts": {
+        "build": "tsc --build",
+        "test": "pnpm build && pnpm jest . -c ../../jest.config.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+}

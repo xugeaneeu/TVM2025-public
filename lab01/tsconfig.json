@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "out",
+    "rootDir": "src",
+  },
+  "include": ["src"],
+  "references": [
+    {"path": "../mark"}
+  ]
+}

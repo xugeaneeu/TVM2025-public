@@ -1,0 +1,26 @@
+{
+  "name": "@tvm/mark",
+  "version": "1.0.0",
+  "description": "",
+  "main": "out/index.js",
+  "type": "commonjs",
+  "files": [
+    "out/**/*.js",
+    "out/**/*.d.ts"
+  ],
+  "scripts": {
+    "build": "pnpm install && tsc --build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+		"@jest/types": "29.6.3",
+		"@types/jest": "^29.5.14",
+    "@types/node": "^22.10.5",
+    "ts-jest": "^29.2.5"
+  },
+  "dependencies": {
+		"@jest/globals": "29.7.0"
+  }
+}

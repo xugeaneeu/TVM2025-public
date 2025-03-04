@@ -1,0 +1,4 @@
+constant() returns c: int
+{
+    c = 42;
+}

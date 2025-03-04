@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "target": "ES2022",
+    "lib": [
+      "ES2023",
+    ],
+    "module": "CommonJS",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "composite": true,
+    "declaration": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "strictNullChecks": true,
+    "moduleResolution":"node",
+    "paths": {
+      "@tvm/lab03": ["./lab03/"],
+      "@tvm/lab04": ["./lab04/"],
+      "@tvm/lab08": ["./lab08/"],
+      "@tvm/lab09": ["./lab09/"],
+      "@tvm/lab10": ["./lab10/"],
+      "@tvm/wasm": ["./wasm/"]
+    }
+
+  },
+  "exclude": ["out", "dist"]
+}

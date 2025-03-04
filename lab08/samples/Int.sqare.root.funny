@@ -1,0 +1,16 @@
+sqrt(n: int) 
+    // where n >= 0
+    returns r: int
+    // having square(a) <= n and square(a+1) > n
+{
+    r = 0;
+    while(r * r < n)
+        r = r + 1;
+}
+
+square(x: int) 
+    returns y: int 
+//    having y = x * x
+{
+    y = x * x;
+}

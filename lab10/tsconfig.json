@@ -1,0 +1,17 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "out",
+    "rootDir": "src",
+    "target": "ES2018",
+    "lib": ["DOM", "ES2021"]
+  },
+  "include": ["src"],
+  "exclude": ["out"],
+  "references": [
+    {"path": "../lab08"},
+    {"path": "../lab09"},
+    {"path": "../mark"},
+    {"path": "../wasm"}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+    "extends": "../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "out",
+        "rootDir": "src",
+        "lib": ["DOM"],
+    },
+    "include": ["src"],
+    "exclude": ["out"],
+    "references": [
+        {"path": "../lab03" },
+        {"path": "../mark" }
+    ]
+}

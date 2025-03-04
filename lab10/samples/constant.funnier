@@ -1,0 +1,5 @@
+constant() returns c: int
+ensures c == 42
+{
+    c = 42;
+}

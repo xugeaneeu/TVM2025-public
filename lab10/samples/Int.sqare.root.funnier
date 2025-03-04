@@ -1,0 +1,22 @@
+sqrt(n: int) 
+    requires n >= 0
+    returns r: int
+    ensures r*r <= n and (r+1)*(r+1) > n
+    uses y: int
+{
+    r = 0;
+    y = 0;
+    while(y < n) invariant((r+1)*(r+1) <= n)
+    {
+        y = y + 2*r + 1;
+        r = r + 1;
+    }
+    r = r - 1;
+}
+
+square(x: int) 
+    returns y: int 
+    ensures y == x * x
+{
+    y = x * x;
+}

@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "out",
+    "rootDir": "src",
+    "tsBuildInfoFile": "out/tsconfig.tsbuildinfo"
+  },
+  "include": ["src"],
+  "exclude": ["out"],
+  "references": [
+    {"path": "../mark"}
+  ]
+}

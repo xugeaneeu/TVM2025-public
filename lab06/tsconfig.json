@@ -1,0 +1,22 @@
+{
+    "extends": "../tsconfig.base.json",
+    "compilerOptions": {
+      "baseUrl": "./",
+      "outDir": "out",
+      "rootDir": "src",
+      "lib": ["DOM"],
+      "paths": {
+        "lab04": ["../lab04/"],
+        "lab05": ["../lab05/"],
+        "wasm": ["../wasm/"],
+      }
+    },
+    "include": ["src"],
+    "exclude": ["out"],
+    "references": [
+        {"path": "../lab04" },
+        {"path": "../lab05" },
+        {"path": "../wasm" },
+        {"path": "../mark" }
+    ]
+  }
