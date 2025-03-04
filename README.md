@@ -11,6 +11,7 @@ The code of these excercises is based on the following technologies:
 - Implementation language: [Typescript](https://www.typescriptlang.org/)
 - Execution environment: [Node.js](https://nodejs.org/)
 - Compilation target: [Wasm](https://webassembly.org/)
+- Theorem prover: [Z3](https://github.com/Z3Prover/z3) via the [z3-solver](https://www.npmjs.com/package/z3-solver) package
 - Package manager: [pnpm](https://pnpm.io/)
 - Parser library: [Ohm](https://ohmjs.org/)
 - Autotests: [Jest](https://jestjs.io/) (may be replaced)
@@ -52,24 +53,21 @@ flowchart LR
     Lab09[<a href="./lab09">Lab09</a>]
     Lab10[<a href="./lab10">Lab10</a>]
     Lab11[<a href="./lab11">Lab11</a>]
-    Lab12[<a href="./lab12">Lab12</a>]
 
     
     Lab03 --> Lab04
     Lab04 --> Lab05
     Lab04 --> Lab06
-    Lab04 --> Lab06
+    Lab03 --> Lab07
     Lab04 --> Lab07
-    Lab05 --> Lab08
-    Lab03 --> Lab09
-    Lab04 --> Lab09
+    Lab03 --> Lab08
+    Lab04 --> Lab08
+    Lab08 --> Lab09
+    Lab08 --> Lab10
     Lab09 --> Lab10
+    Lab04 --> Lab11
     Lab09 --> Lab11
     Lab10 --> Lab11
-    Lab04 --> Lab12
-    Lab09 --> Lab12
-    Lab10 --> Lab12
-    Lab11 --> Lab12
 ```
 
 **Note**: getting the passing mark requires *breadth*, i.e. completing all the excercises on the desired level. The recommended approach to this course is to focus on getting all the labs done with the basic goals (setting the desired mark to 3 and making sure all the tests are passed). Then try to improve the depth by changing the desired mark to 4, and fixing the broken tests if any.

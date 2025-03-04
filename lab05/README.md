@@ -1,6 +1,6 @@
 # Lab 05: Compiling to Wasm
 
-This excercise builds upon the grammar from the [Lab 03](../lab03) to build a mini-compiler for the arithmetic expressions into the WebAssembly instruction format.
+This excercise builds upon the grammar from the [Lab 03](../lab03/) parsed via parser from [Lab 04] (../lab04/) to build a mini-compiler for the arithmetic expressions into the WebAssembly instruction format.
 
 ## Goal
 

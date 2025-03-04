@@ -8,9 +8,7 @@ const addMulCalc = {
 /// write the action rules here
 } satisfies AddMulActionDict<number>
 
-
 addMulSemantics.addOperation<Number>("calculate()", addMulCalc);
-
 
 interface AddMulDict  extends Dict {
     calculate(): number;
