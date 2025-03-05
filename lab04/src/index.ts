@@ -1,7 +1,7 @@
-import { getExprAst } from "./ast";
+import { parseExpr } from "./parser";
 import { printExpr } from "./printExpr";
 
-export { printExpr, getExprAst };
+export { printExpr, parseExpr };
 export { Expr } from "./ast";
 
-export const parseAndPrint = (source: string): string => printExpr(getExprAst(source));
+export const parseAndPrint = (source: string): string => printExpr(parseExpr(source));

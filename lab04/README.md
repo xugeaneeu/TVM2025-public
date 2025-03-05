@@ -18,14 +18,14 @@ We would also export the AST node types for the next labs in this course.
 ## Tasks
 
 1. Implement an AST by defining types for all the expression kinds in [ast.ts](src/ast.ts). The root type should be named `Expr`, rest is up to the student discretion.
-2. Implement a semantic action `parse()` that converts the parse result provided by the Ohm library into this AST
-3. Implement a "reverse" of the parse process in the function named 'printExpr' defined in the [printExpr.ts](src/printExpr.ts)
+2. Implement a semantic action `parse()` at [parser.ts](src/parser.ts) that converts the parse result provided by the Ohm library into this AST
+3. Implement a wrapper function `parseExpr(string)` at [parser.ts](src/parser.ts) that passes the input string through the grammar and builds the AST using the semantic action mentioned above.
+4. Implement a "reverse" of the parse process in the function named 'printExpr' defined in the [printExpr.ts](src/printExpr.ts)
 
 ## Evaluation
 
 - C | 3 | Hey, Not Too Rough:
   - Support all the expression nodes in parsing
-  - Respect the operation priorities, associativity, and parentheses
 - B | 4 | Hurt Me Plenty:
   - Skip printing the non-necessary parentheses
 
