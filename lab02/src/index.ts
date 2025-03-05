@@ -1,6 +1,5 @@
-// import {  MatchResult } from "ohm-js";
-// import grammar from "./rpn.ohm-bundle";
-// import { rpnSemantics } from "./semantics";
+import grammar from "./rpn.ohm-bundle";
+import { rpnSemantics } from "./semantics";
 
 export function evaluate(source: string): number
 { 
