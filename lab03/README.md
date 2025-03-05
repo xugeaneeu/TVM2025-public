@@ -44,6 +44,7 @@ Note that this grammar requires additional disambiguation beyond operation prior
   - Ensure the syntax errors are properly reported
   - Ensure that division by zero throws an exception
 - B | 4 | Hurt Me Plenty:
+  - Implement proper operation priorities and parentheses support
   - Make sure multiple application of the unary minus is supported (```--a```)
   - Make sure the division and subtraction are left-associative
 - A | 5 | Ultra-Violence:
