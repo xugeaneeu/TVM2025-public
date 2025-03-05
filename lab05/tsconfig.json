@@ -1,14 +1,9 @@
 {
     "extends": "../tsconfig.base.json",
     "compilerOptions": {
-      "baseUrl": "./",
       "outDir": "out",
       "rootDir": "src",
       "lib": ["DOM"],
-      "paths": {
-        "lab04": ["../lab04/"],
-        "wasm": ["../wasm/"]
-      }
     },
     "include": ["src"],
     "exclude": ["out"],
