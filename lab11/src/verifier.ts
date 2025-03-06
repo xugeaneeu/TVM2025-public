@@ -1,5 +1,5 @@
 import assert from "assert";
-import { ResolvedAnnotatedFunction, ResolvedAnnotatedModule } from "@tvm/lab10";
+import { ResolvedAnnotatedFunction, ResolvedAnnotatedModule } from "lab10";
 import { match } from "ts-pattern";
 import { Arith, ArithSort, Bool, Context, init, Model, SMTArray, SMTArraySort } from "z3-solver";
 import { printZ3Model } from "./printZ3Model";

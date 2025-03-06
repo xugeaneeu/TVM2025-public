@@ -1,9 +1,9 @@
-import { Expr, getExprAst } from "../../lab04";
+import { Expr, parseExpr } from "lab04";
 import { buildFunction, getVariables } from "./compiler";
 import { Fn } from "./emitHelper";
 
 export async function parseCompileAndExecute(expression: string, ...args: number[]): Promise<number> {
-    let expr = getExprAst(expression);
+    let expr = parseExpr(expression);
     let variables = getVariables(expr);
     return await compileAndExecute(expr, variables, ...args);
 }

@@ -1,5 +1,5 @@
 {
-  "name": "lab4",
+  "name": "@tvm/lab05",
   "version": "1.0.0",
   "description": "",
   "main": "out/index.js",

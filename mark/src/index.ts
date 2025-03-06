@@ -1,6 +1,6 @@
 import { desiredMark } from "../../desiredMark.json";
 import { test as testJs } from '@jest/globals';
-export type DesiredMark = 3|4|5;
+export type DesiredMark = 3|4|5|"5+";
 
 
 export function test<T extends any[], R>(name: string, testMark: DesiredMark, fn:(...args:T)=>R, expected: ResultOrException<R>, ...args:T): void

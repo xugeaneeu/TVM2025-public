@@ -1,13 +1,13 @@
 import { MatchResult } from 'ohm-js';
-import { arithGrammar, ArithmeticActionDict, ArithmeticSemantics, SyntaxError } from '@tvm/lab03';
+import { arithGrammar, ArithmeticActionDict, ArithmeticSemantics, SyntaxError } from 'lab03';
 import { Expr } from './ast';
 
-export const getArithAst: ArithmeticActionDict<Expr> = {
+export const getExprAst: ArithmeticActionDict<Expr> = {
     // write rules here
 }
 
 export const semantics = arithGrammar.createSemantics();
-semantics.addOperation("parse()", getArithAst);
+semantics.addOperation("parse()", getExprAst);
 
 export interface ArithSemanticsExt extends ArithmeticSemantics
 {

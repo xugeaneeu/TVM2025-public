@@ -1,6 +1,6 @@
 import { writeFileSync } from "fs";
 import { match } from "ts-pattern";
-import { Op, I32, Void, c, BufferedEmitter, LocalEntry} from "@tvm/wasm";
+import { Op, I32, Void, c, BufferedEmitter, LocalEntry} from "../../wasm";
 
 import { ResolvedModule } from "./resolver";
 

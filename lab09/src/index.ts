@@ -1,4 +1,4 @@
-import { parseFunny} from "@tvm/lab08";
+import { parseFunny} from "lab08";
 
 import { compileModule as compileModule } from "./compiler";
 import { resolveModule } from "./resolver";

@@ -1,5 +1,5 @@
 import { match, P } from "ts-pattern";
-import { Module } from "@tvm/lab08";
+import { Module } from "lab08";
 
 export interface ResolvedModule extends Module
 {
