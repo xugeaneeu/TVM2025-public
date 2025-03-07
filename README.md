@@ -1,6 +1,8 @@
-# Translation and Compilation Methods
+# Translation and Verification Methods
 
-This is the set of hands-on excercises to support the lecture course of Translation and Compilation Methods taught on
+[[RU](README.ru.md)|EN]
+
+This is the set of hands-on excercises to support the lecture course of Translation and Verification Methods taught on
 [FIT NSU](https://www.nsu.ru/n/information-technologies-department/) as a part of the [09.03.01](https://www.nsu.ru/n/information-technologies-department/education_fit/programs/OOP/09-03-01/piikn/piikn.php) education program.
 
 ## Introduction
@@ -19,17 +21,17 @@ The code of these excercises is based on the following technologies:
 
 ## Excercise Evaluation
 
-There are a set of goals for each excercise. The goals are tagged with the mark. In order to get a C mark (3) for the whole practice, one must achieve all the goals marked with C. To get a B, one needs to achive all the B **and** all the C goals, and so on.
+There are a set of goals for each lab. Every goal is tagged with a mark. In order to get a C mark (3) for the whole practice, one must achieve all the goals tagged with C. To get a B, one needs to achive all the B **and** all the C goals, and so on.
 To verify the solutions, one should use the built-in test framework: specify the desired mark in the file [desiredMark.json](desiredMark.json), and run the auto-tests. The tests for the goals above the requested mark would be automatically skipped.
 
 ## Contents and Solution Order
 
-The recommended order of implementation is starting from Lab 01 and proceeding sequentially through Lab 12:
+The recommended order of implementation is starting from Lab 01 and proceeding sequentially through Lab 11:
 
 - [Lab 01](./lab01/): Addition and Multiplication
 - [Lab 02](./lab02/): Reverse Polish Notation
 - [Lab 03](./lab03/): Arithmetic with Variables
-- [Lab 04](./lab04/): Parsing to AST
+- [Lab 04](./lab04/): Parsing Arithmetics to AST
 - [Lab 05](./lab05/): Compiling to Wasm
 - [Lab 06](./lab06/): Symbolic Derivation
 - [Lab 07](./lab07/): Symbolic Simplification
@@ -70,7 +72,7 @@ flowchart LR
     Lab10 --> Lab11
 ```
 
-**Note**: getting the passing mark requires *breadth*, i.e. completing all the excercises on the desired level. The recommended approach to this course is to focus on getting all the labs done with the basic goals (setting the desired mark to 3 and making sure all the tests are passed). Then try to improve the depth by changing the desired mark to 4, and fixing the broken tests if any.
+**Note**: getting the passing mark requires *breadth*, i.e. completing all the excercises on the desired level. The recommended approach to this course is to focus on getting all the labs done with the basic goals (setting the desired mark to 3 and making sure all the tests are passed). Then try to improve the *depth* by changing the desired mark to 4, and fixing the failed tests if any.
 This approach ensures smart resource allocation - if one doesn't have enough time to complete all the excercises, they would better get a passing mark than risking to get *half* the labs solved at a perfect level.
 
 ## Prerequisites and Installation
@@ -79,7 +81,7 @@ This approach ensures smart resource allocation - if one doesn't have enough tim
 2. Checkout this project.
 3. Run a terminal at the project root location and execute
 
-   ```pnpm install -r```
+   `pnpm install -r`
 
    This will download and install the dependencies for all the labs
 4. (Optional) download and install VS Code: [https://code.visualstudio.com/Download](https://code.visualstudio.com/Download)
@@ -87,16 +89,12 @@ This approach ensures smart resource allocation - if one doesn't have enough tim
    Two extra tools would be handy
       - *Jest* extension helps you running the unit tests (that are going to be the basis of the excercise acceptance)
       - *Ohm-JS Language* extension helps you to write the PEG grammars extensively used throughout this course
+5. Build the labs
+   - **VS Code**: press Shift-Ctrl-B.
 
-5. Build a lab
-   - **VS Code**: open any file in the ```src``` folder of any lab, press Shift-Ctrl-B.
-
-     **Note**: the build command searches for the package manifest one level above the current file; this would cause a "No package.json not found" in case the command is issued when the ```package.json``` or ```tsconfig.json``` are open in the editor
-
-   - **CLI**: run terminal at the root folder of any lab; execute ```pnpm run build```
-
+   - **CLI**: run terminal at the root folder of any lab; execute `pnpm build`.
+     Running `pnpm -r build` will build all labs at once. 
 6. Run tests
-
-   **Note**: don't forget to set the desired mark via the ```desiredMark.json```!
+   **Note**: don't forget to set the desired mark via the `desiredMark.json`!
    - **VS Code**: switch to the Testing tab, hover the project root, click "Run Tests" icon
-   - **CLI**: run the ```jest``` command at the project root
+   - **CLI**: run the `jest``command at the project root
