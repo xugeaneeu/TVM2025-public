@@ -1,5 +1,4 @@
-import { match } from "ts-pattern";
-import { c as C, Op, I32 } from "wasm";
+import { c as C, Op, I32 } from "../../wasm";
 import { Expr } from "../../lab04";
 import { buildOneFunctionModule, Fn } from "./emitHelper";
 const { i32, get_local} = C;
