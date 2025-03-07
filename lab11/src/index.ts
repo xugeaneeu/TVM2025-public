@@ -1,5 +1,5 @@
-import { ExportWrapper, compileModule } from "lab09";
-import { parseFunnier, resolveModule } from "lab10";
+import { ExportWrapper, compileModule } from "../../lab09";
+import { parseFunnier, resolveModule } from "../../lab10";
 import { verifyModule } from "./verifier";
 
 export async function parseVerifyAndCompile(source: string): Promise<Record<string, Function>>

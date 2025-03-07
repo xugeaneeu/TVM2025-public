@@ -1,5 +1,5 @@
 import { match, P } from "ts-pattern";
-import { Expr } from "lab04";
+import { Expr } from "../../lab04";
 
 export function derive(e: Expr, varName: string): Expr
 {

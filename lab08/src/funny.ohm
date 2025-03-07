@@ -1,0 +1,7 @@
+Arithmetic {
+    // write rules here
+}
+Funny <: Arithmetic {
+    // write rules here
+}
+

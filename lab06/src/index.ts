@@ -1,5 +1,5 @@
-import { parseExpr, printExpr } from "lab04";
-import { getVariables, compileAndExecute } from "lab05";
+import { parseExpr, printExpr } from "../../lab04";
+import { getVariables, compileAndExecute } from "../../lab05";
 import { derive } from "./derive";
 
 export function deriveAndPrint(source: string, varName: string): string

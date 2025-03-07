@@ -1,4 +1,4 @@
-import * as arith from "lab04";
+import * as arith from "../../lab04";
 
 export interface Module
 {

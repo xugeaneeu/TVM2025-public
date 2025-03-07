@@ -1,4 +1,4 @@
-import { getExprAst } from 'lab04';
+import { getExprAst } from lab04';
 import * as ast from './funny';
 
 import grammar from './funny.ohm-bundle';
