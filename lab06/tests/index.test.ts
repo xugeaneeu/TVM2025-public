@@ -13,8 +13,8 @@ describe("Numerical tests", ()=>{
     test("(f*g)' == f'*g + f*g' 2", 3, deriveAndCalculate, 10, "x*y", "x", 10, 10); 
     test("(f/g)' == (f'*g - f*g')/(g^2) 1", 3, deriveAndCalculate, 1, "x/y", "x", 1, 1);
     test("(f/g)' == (f'*g - f*g')/(g^2) 2", 3, deriveAndCalculate, 1, "x/y", "x", 10, 1);
-    test("(f/g)' == (f'*g - f*g')/(g^2) 3", 3, deriveAndCalculate, 1, "x/y", "y", 1, 1);
-    test("(f/g)' == (f'*g - f*g')/(g^2) 3", 3, deriveAndCalculate, 4, "x/y", "y", 16, 2);
+    test("(f/g)' == (f'*g - f*g')/(g^2) 3", 3, deriveAndCalculate, -1, "x/y", "y", 1, 1);
+    test("(f/g)' == (f'*g - f*g')/(g^2) 3", 3, deriveAndCalculate, -4, "x/y", "y", 16, 2);
 });
 
 describe("Structural tests", ()=>{
