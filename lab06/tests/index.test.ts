@@ -5,10 +5,10 @@ import { deriveAndCalculate, deriveAndPrint } from "../src";
 
 describe("Numerical tests", ()=>{
     test("C' = 0", 3, deriveAndCalculate, 0, "35+7", "x");
-    test("(f + g)' = f' + g' 1", 3, deriveAndCalculate, 2, "2+x*y", "x", 42, 0);
-    test("(f + g)' = f' + g' 2", 3, deriveAndCalculate, 7, "2+x*y", "x", 42, 5);
-    test("(f - g)' = f' - g' 1", 3, deriveAndCalculate, 2, "2-x*y", "x", 42, 0);
-    test("(f - g)' = f' - g' 2", 3, deriveAndCalculate, -3, "2-x*y", "x", 42, 5);    
+    test("(f + g)' = f' + g' 1", 3, deriveAndCalculate, 0, "2+x*y", "x", 42, 0);
+    test("(f + g)' = f' + g' 2", 3, deriveAndCalculate, 5, "2+x*y", "x", 42, 5);
+    test("(f - g)' = f' - g' 1", 3, deriveAndCalculate, 0, "2-x*y", "x", 42, 0);
+    test("(f - g)' = f' - g' 2", 3, deriveAndCalculate, -5, "2-x*y", "x", 42, 5);    
     test("(f*g)' == f'*g + f*g' 1", 3, deriveAndCalculate, 0, "x*y", "x", 0, 0);
     test("(f*g)' == f'*g + f*g' 2", 3, deriveAndCalculate, 10, "x*y", "x", 10, 10); 
     test("(f/g)' == (f'*g - f*g')/(g^2) 1", 3, deriveAndCalculate, 1, "x/y", "x", 1, 1);
