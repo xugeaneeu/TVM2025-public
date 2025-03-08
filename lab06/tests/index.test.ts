@@ -19,7 +19,7 @@ describe("Numerical tests", ()=>{
 
 describe("Structural tests", ()=>{
     test("Constant derives to zero 1", 3, deriveAndPrint, "0", "42", "x");
-    test("Constant derives to zero 2", 3, deriveAndPrint, "0", "-42", "x");
+    test("Constant derives to zero 2", 4, deriveAndPrint, "0", "-42", "x");
     test("Variable derives to one", 3, deriveAndPrint, "1", "x", "x");
     test("Variable derives by other variable to zero", 3, deriveAndPrint, "0", "x", "y");
     test("(f + g)' = f' + g' 1", 4, deriveAndPrint, "2 + y", "2*x+x*y", "x");
