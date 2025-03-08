@@ -7,7 +7,7 @@ This is the set of hands-on excercises to support the lecture course of Translat
 
 ## Introduction
 
-This set of excercises aims at building the verifying translator from an imaginary language Funnier into WASM.
+This set of excercises aims at building the verifying translator from a toy language [Funny](funny.md) into WASM.
 The code of these excercises is based on the following technologies:
 
 - Implementation language: [Typescript](https://www.typescriptlang.org/)

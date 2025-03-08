@@ -5,8 +5,14 @@ the grammar inheritance / reuse offered by the Ohm library.
 
 ## Goal
 
-In this lab we will build a complete front-end for the toy language named Funny.
-See the [funny.md](funny.md) for the detailed description of the Funny syntax.
+In this lab we will build a complete front-end for the subset of the toy language named Funny.
+See the [funny.md](../funny.md) for the detailed description of the Funny syntax.
+In this lab we will ignore all the Funny parts related to the verification:
+
+1. The functions pre- and post-conditions
+2. Loop invariants
+3. Formula definitions
+
 Note that in [Lab 03](../lab03/) the [arithmetics grammar](../lab03/src/arith.ohm) has been build from scratch, even though the rules there are quite similar to the ones used in the [Lab 01](../lab01/)'s [AddMul grammar](../lab01/src/addmul.ohm).
 
 The Ohm library offers a better way of handling the grammar relations, allowing the parser authors to reuse and extend upon the proven grammars.
