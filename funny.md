@@ -6,7 +6,7 @@ Funny allows the user to define a *module*. Module consists of the named [*funct
 
 This module gets compiled into a WebAssembly module.
 
-Some Funny sources can be found at [Lab 08 samples](/lab08/samples/) and [Lab 10 samples](/lab10/samples/).
+Some Funny sources can be found at [Lab 08 samples](./lab08/samples/) and [Lab 10 samples](./lab10/samples/).
 
 ## Funny Background and Rationale
 
@@ -207,7 +207,7 @@ Note that semicolon is not a "statement separator" - it is a part of the assignm
 
 ## Expressions
 
-The Funny expressions are basically the same as in [Lab 03](../lab03/), with two additional atoms:
+The Funny expressions are basically the same as in [Lab 03](./lab03/), with two additional atoms:
 
 ```EBNF
 expr = 
