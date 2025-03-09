@@ -25,8 +25,8 @@ Note that this grammar does not need any kind of parentheses or priority rules: 
 
 1. Create a PEG grammar for the arithmetic expressions described by the EBNF above, using the Ohm library syntax.  
   The empty grammar template is supplied at the file [rpn.ohm](src/rpn.ohm). Fill it with the necessary rules.
-2. Implement and export the composite function ```evaluate(content: string): number``` at [index.ts](src/index.ts) with the properties similar to the analogous function in the [previous lab](../lab01/).
-3. Implement and export the function ```maxStackDepth(content: string): number``` at [index.ts](src/index.ts) that returns the max stack depth required for a valid RPN expression or throws a ```SyntaxError``` for an invalid input.
+2. Implement and export the composite function `evaluate(content: string): number` at [index.ts](src/index.ts) with the properties similar to the analogous function in the [previous lab](../lab01/).
+3. Implement and export the function `maxStackDepth(content: string): number` at [index.ts](src/index.ts) that returns the max stack depth required for a valid RPN expression or throws a `SyntaxError` for an invalid input.
 
 ## Evaluation
 

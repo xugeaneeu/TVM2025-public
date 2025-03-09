@@ -4,7 +4,7 @@ This lab will use the grammar from the [previous lab](../lab03) to build an *Abs
 
 ## Goal
 
-Note that the way the ```calculate``` function was implemented in Lab 01 through 03 is called *interpretation*: there is a code written in the "host language" that evaluates the parse tree in runtime and applies the operations stored there.
+Note that the way the `calculate` function was implemented in Lab 01 through 03 is called *interpretation*: there is a code written in the "host language" that evaluates the parse tree in runtime and applies the operations stored there.
 
 Many modern languages don't follow this approach. Instead, there is a *translation* process involved - converting a program in one language to an equivalent program in a different language.
 

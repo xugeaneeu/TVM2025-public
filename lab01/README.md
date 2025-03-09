@@ -32,9 +32,9 @@ For the rest of this course we will use the PEG - [Parsing Expression Grammars](
 1. Create a PEG grammar for the arithmetic expressions described by the EBNF above, using the Ohm library syntax.  
   The empty grammar template is supplied at the file [addmul.ohm](src/addmul.ohm). Fill it with the necessary rules.
 
-2. Implement the semantic action ```calculate()``` for this grammar that should return a ```number``` for a parsed expression.
+2. Implement the semantic action `calculate()` for this grammar that should return a `number` for a parsed expression.
   The empty definition for this action is supplied at the file [calculate.ts](src/calculate.ts). Fill it with the necessary rules.
-3. Implement and export the composite function ```parse(content: string): number``` at [index.ts](src/index.ts). The function must
+3. Implement and export the composite function `parse(content: string): number` at [index.ts](src/index.ts). The function must
    - parse the input string via the grammar implemented in task 1
    - on a parsing failure throw the SyntaxException
    - on a parsing success apply the calculate semantic action implemented in task 2 to the parse result (match object) and return the action to the caller

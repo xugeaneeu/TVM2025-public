@@ -16,7 +16,7 @@ The Ohm library offers two solutions to this:
    Hash = NonemptyListOf<At, "#"> 
    ```
 
-   This approach requires the parser author to either change the AST structure, so the ```#``` operation becomes N-ary instead of binary, or to convert the N-ary node parsed by this grammar into a binary parse tree within the semantic action:
+   This approach requires the parser author to either change the AST structure, so the `#` operation becomes N-ary instead of binary, or to convert the N-ary node parsed by this grammar into a binary parse tree within the semantic action:
 
    ```ts
    Hash(head, tail)

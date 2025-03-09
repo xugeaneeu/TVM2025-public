@@ -30,7 +30,7 @@ The recommended order of implementation is starting from Lab 01 and proceeding s
 
 - [Lab 01](./lab01/): Addition and Multiplication
 - [Lab 02](./lab02/): Reverse Polish Notation
-- [Lab 03](./lab03/): Arithmetic with Variables
+- [Lab 03](./lab03/): Arithmetic Expressions
 - [Lab 04](./lab04/): Parsing Arithmetics to AST
 - [Lab 05](./lab05/): Compiling to Wasm
 - [Lab 06](./lab06/): Symbolic Derivation
@@ -93,7 +93,7 @@ This approach ensures smart resource allocation - if one doesn't have enough tim
    - **VS Code**: press Shift-Ctrl-B.
 
    - **CLI**: run terminal at the root folder of any lab; execute `pnpm build`.
-     Running `pnpm -r build` will build all labs at once. 
+     Running `pnpm -r build` will build all labs at once.
 6. Run tests
    **Note**: don't forget to set the desired mark via the `desiredMark.json`!
    - **VS Code**: switch to the Testing tab, hover the project root, click "Run Tests" icon
