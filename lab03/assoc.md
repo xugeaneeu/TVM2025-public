@@ -1,6 +1,8 @@
-# Handling Left-Associativity in Infix Expressions
+# Handling the Left Associativity in Infix Expressions
 
-Naturally, PEG does support only the right recursion. Or, in other terms, the left recursion in PEG breaks the parsing process (see the [section in Wikipedia](https://en.wikipedia.org/wiki/Parsing_expression_grammar#Indirect_left_recursion) for more detail).
+[[RU](./assoc.ru.md)|EN]
+
+Naturally, PEG does support only the right recursion. Or, in other terms, the left recursion in PEG breaks the parsing process (see the [section in Wikipedia][PEG-LR] for more detail).
 
 The Ohm library offers two solutions to this:
 
@@ -27,7 +29,7 @@ The Ohm library offers two solutions to this:
    }
    ```
 
-2. **Ohm-specific** approach is based on the [article](https://tinlizzie.org/VPRIPapers/tr2007002_packrat.pdf) published by the Ohm author - it *permits* the left recursion, unlike most other PEG parsers in the wild:
+2. **Ohm-specific** approach is based on the [article][Packrat-LR] published by the Ohm author - it *permits* the left recursion, unlike most other PEG parsers in the wild:
 
    ```js
    Hash = Hash "#" At | At // direct left recursion!
@@ -35,3 +37,6 @@ The Ohm library offers two solutions to this:
 
    This method offers the most convenience for the parser writer, as it allows to naturally express the left-associative binary operations without an extra burden of reducing the N-ary argument sequences into the binary parse trees.
    
+
+[PEG-LR]: https://en.wikipedia.org/wiki/Parsing_expression_grammar#Indirect_left_recursion
+[Packrat-LR]: https://tinlizzie.org/VPRIPapers/tr2007002_packrat.pdf

@@ -1,5 +1,7 @@
 # Lab 03: Arithmetic Expressions
 
+[[RU](README.ru.md)|EN]
+
 This excercise extends the [Lab 01](../lab01/) to the full "school arithmetics" support, adding subtraction, division, unary negation, and variables to the expression language. The purpose of this is to get acquainted with the sophisticated features of the Ohm library, such as action parameters and left recursion support.
 
 ## Goal
@@ -53,4 +55,4 @@ Note that this grammar requires additional disambiguation beyond operation prior
 ## Hints
 
 1. Handling left-associativity might be tricky. See the [assoc.md](assoc.md) for more detail.
-2. Note that JS does not treat division by zero an exception. By default it just yields `Infinity`.
+2. Note that JS does not treat division by zero as an exception. By default it just yields `Infinity`.
