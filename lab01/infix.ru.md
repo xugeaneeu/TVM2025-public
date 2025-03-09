@@ -1,6 +1,6 @@
-# Parsing Infix Operations with Priorities
+# Разбор инфиксных операций с приоритетами
 
-[[RU](infix.ru.md)|EN]
+[RU|[EN](./)]
 
 The common way of expressing the infix operations priority in grammars is splitting the rules. When looking at a string like `x # y @ z # w`, where `#` and `@` are some infix binary operations, we see a sequence of *low priority* operations applied to the results of *high priority* operations. I.e. if `#`'s priority is higher, then this string would be read as "`@` applied to `x # y` and `z # w`".
 If `#` has the lowest priority, then this string is read as "`#` applied to `x`, `y @ z` and `w`". Note we don't need to think of whether a `#`'s argument is an atom or a higher operation's result: we can see it as a "sequence of one or more atoms joined by `@`". For example, the number `42` in such a grammar would be seen as a "multiplication with a single factor", whereas `6*7` would be a "multiplication of two factors".
