@@ -1,4 +1,4 @@
-# Funny Language
+# Язык Funny
 
 [RU|[EN](funny.md)]
 
@@ -60,17 +60,17 @@ Funny поддерживает константы типа `int`, записан
 Синтаксис определения функции следующий:
 
 ```EBNF
-function = identifier (* имя функции *)
-"(" [ variableDef {"," variableDef } ] ")" (* параметр(ы) функции *)
-["requires" predicate ] (* предусловие функции *)
-"returns" variableDef {"," variableDef } (* возвращаемое(ые) значение(я) функции *)
-["ensures" predicate ] (* постусловие функции *)
-[ "uses" variableDef {"," variableDef } ] (* локальная(ые) переменная(ые) функции *)
-оператор; (* тело функции *)
+function = identifier                          (* имя функции *)
+    "(" [ variableDef {"," variableDef } ] ")" (* параметр(ы) функции *)
+    ["requires" predicate ] (* предусловие функции *)
+    "returns" variableDef {"," variableDef }   (* возвращаемое(ые) значение(я) функции *)
+    ["ensures" predicate ]                     (* постусловие функции *)
+    [ "uses" variableDef {"," variableDef } ]  (* локальная(ые) переменная(ые) функции *)
+    оператор;                                  (* тело функции *)
 
 variableDef =
-identifier (* имя переменной*)
-":" variableType;
+    identifier (* имя переменной*)
+    ":" variableType;
 
 variableType = "int" | "int[]";
 ```

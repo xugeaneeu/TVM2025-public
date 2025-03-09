@@ -1,6 +1,6 @@
 # Lab 10: Parsing Funnier
 
-The goal of this lab is to extend the Funny parser implemented in [Lab 08](../lab08/) to support the [Funnier](funnier.md) language.
+The goal of this lab is to extend the Funny parser implemented in [Lab 08](../lab08/) to support the formulas and annotations.
 
 ## Goal
 
