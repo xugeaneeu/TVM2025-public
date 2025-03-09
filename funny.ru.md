@@ -62,7 +62,7 @@ Funny поддерживает константы типа `int`, записан
 ```EBNF
 function = identifier                          (* имя функции *)
     "(" [ variableDef {"," variableDef } ] ")" (* параметр(ы) функции *)
-    ["requires" predicate ] (* предусловие функции *)
+    ["requires" predicate ]                    (* предусловие функции *)
     "returns" variableDef {"," variableDef }   (* возвращаемое(ые) значение(я) функции *)
     ["ensures" predicate ]                     (* постусловие функции *)
     [ "uses" variableDef {"," variableDef } ]  (* локальная(ые) переменная(ые) функции *)
