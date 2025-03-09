@@ -1,4 +1,4 @@
-# Funny Language
+# Язык Funny
 
 [RU|[EN](funny.md)]
 
