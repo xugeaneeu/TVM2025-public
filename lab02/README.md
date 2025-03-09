@@ -1,12 +1,16 @@
 # Lab 02: Reverse Polish Notation
 
+[[RU](README.ru.md)|EN]
+
 The purpose of this excercise is to practice creating the grammars for micro-languages and attaching multiple semantic actions to the single grammar.
 
 ## Goal
 
-You are going to implement a calculator that supports addition and multiplication written in the [Reverse Polish Notation](https://en.wikipedia.org/wiki/Reverse_Polish_notation) (RPN).
-The "regular" arithmetic expressions implemented in the [previous lab](../lab01/) does use so-called *infix* form, where the operator is placed *between* the operands. The Reverse Polish Notation places the operator *after* the operands, so it uses a *postfix* notation.
+You are going to implement a calculator that supports addition and multiplication written in the [Reverse Polish Notation][RPN] (RPN).
+The "regular" arithmetic expressions implemented in the [previous lab](../lab01/) do use so-called *infix* form, where the operator is placed *between* the operands. The Reverse Polish Notation places the operator *after* the operands, so it uses a *postfix* notation.
+
 Don't confuse it with the Polish Notation, where the operator is placed *before* the operands.
+
 The grammar for the RPN expressions is defined by the following EBNF:
 
 ```EBNF
@@ -33,10 +37,14 @@ Note that this grammar does not need any kind of parentheses or priority rules: 
 - C | 3 | Hey, Not Too Rough:
   - Implement the basic parsing of the RPN expressions
   - Ensure the syntax errors are properly reported
-- B | 4 | Hurt Me Plenty
+- B | 4 | Hurt Me Plenty:
   - Implement the stack depth calculation
 
 ## Hints
 
 1. Max stack depth can be defined similar to the value calculation - as a separate semantic action for the RPN grammar.
-2. When measuring the stack depth, one would need both max stack depth of an argument and the remaining stack depth after the argument is calculated. This can be done by implementing *two* semantic actions/attributes, or as a single one returning a composite type (an [interface](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#interfaces) or a [tuple](https://www.typescriptlang.org/docs/handbook/2/objects.html#tuple-types).
+2. When measuring the stack depth, one would need both max stack depth of an argument and the remaining stack depth after the argument is calculated. This can be done by implementing *two* semantic actions/attributes, or as a single one returning a composite type (an [interface] or a [tuple].
+
+[RPN]: https://en.wikipedia.org/wiki/Reverse_Polish_notation
+[interface]: https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#interfaces
+[tuple]: https://www.typescriptlang.org/docs/handbook/2/objects.html#tuple-types
