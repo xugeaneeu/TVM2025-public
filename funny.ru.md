@@ -66,7 +66,7 @@ function = identifier                          (* имя функции *)
     "returns" variableDef {"," variableDef }   (* возвращаемое(ые) значение(я) функции *)
     ["ensures" predicate ]                     (* постусловие функции *)
     [ "uses" variableDef {"," variableDef } ]  (* локальная(ые) переменная(ые) функции *)
-    оператор;                                  (* тело функции *)
+    statement;                                 (* тело функции *)
 
 variableDef =
     identifier (* имя переменной*)
