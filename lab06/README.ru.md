@@ -1,8 +1,8 @@
-# Lab 06: Symbolic Derivation
+# Лабораторная работа 06: Символьное дифференцирование
 
-[[RU](README.ru.md)|EN]
+[RU|[EN](./)]
 
-This excercise builds upon the AST from the [Lab 04](../lab04) to build a tiny symbolic calculator capable of performing a partial derivation of a multi-argument function
+Это упражнение основывается на AST из [лабораторной работы 04](../lab04/README.ru.md) to build a tiny symbolic calculator capable of performing a partial derivation of a multi-argument function
 
 ## Goal
 

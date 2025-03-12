@@ -1,6 +1,8 @@
 # Lab 04: Parsing to AST
 
-This lab will use the grammar from the [previous lab](../lab03) to build an *Abstract Syntax Tree* for the subsequent excercises.
+[[RU](README.ru.md)|EN]
+
+This lab will use the grammar from the [previous lab](../lab03) to build an [*Abstract Syntax Tree*][AST] for the subsequent excercises.
 
 ## Goal
 
@@ -20,7 +22,7 @@ We would also export the AST node types for the next labs in this course.
 1. Implement an AST by defining types for all the expression kinds in [ast.ts](src/ast.ts). The root type should be named `Expr`, rest is up to the student discretion.
 2. Implement a semantic action `parse()` at [parser.ts](src/parser.ts) that converts the parse result provided by the Ohm library into this AST
 3. Implement a wrapper function `parseExpr(string)` at [parser.ts](src/parser.ts) that passes the input string through the grammar and builds the AST using the semantic action mentioned above.
-4. Implement a "reverse" of the parse process in the function named 'printExpr' defined in the [printExpr.ts](src/printExpr.ts)
+4. Implement a "reverse" of the parse process in the function named `printExpr` defined in the [printExpr.ts](src/printExpr.ts)
 
 ## Evaluation
 
@@ -32,5 +34,7 @@ We would also export the AST node types for the next labs in this course.
 ## Hints
 
 1. There are a few ways to represent the AST in the Typescript's type system. See [ast.md](ast.md) for a more detailed discussion
-2. Detection of the parentheses necessity might be tricky. Remember that the parentheses is used to *override* the operation priority and/or associativity. Therefore in order to decide whether to put a parentheses requires comparing the *context* where an expression is used with the operation this expression represents.
+2. Detection of the parentheses necessity might be tricky. Remember that the parentheses is used to *override* the operation priority and/or associativity. Therefore deciding whether to put a parentheses requires comparing the *context* where an expression is used with the operation this expression represents.
 3. Passing a context information requires extra parameters. A straightforward way to do this would be adding a separate recursive function. However, TS/JS supports some flexibility in the function definition: it is possible to add some *extra* parametes to the `printExpr` function signature as long as those parameters are *optional*. This would allow using just a single function for the export and for the recursive descent.
+
+[AST]: https://en.wikipedia.org/wiki/Abstract_syntax_tree
