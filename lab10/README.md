@@ -1,12 +1,14 @@
-# Lab 10: Parsing Funnier
+# Lab 10: Parsing Funny Annotations
 
-The goal of this lab is to extend the Funny parser implemented in [Lab 08](../lab08/) to support the formulas and annotations.
+[[RU](README.ru.md)|EN]
+
+The goal of this lab is to extend the Funny parser implemented in [Lab 08](../lab08/README.md) to support the formulas and annotations.
 
 ## Goal
 
-In this lab we will extend the front-end built in [Lab 08](../lab08/) to support Funnier syntax.
+In this lab we will extend the front-end built in [Lab 08](../lab08/README.md) to support the Funny syntax related to  verification.
 Again, we're going to inherit most of the grammar from that lab to minimize the amount of work to be done.
-The build process will concatenate the ancestor grammar to the one defined in [funnier.ohm.t](src/funnier.ohm.t) before processing it with the Ohm toolchain. Since Funnier language is not that much different from Funny, the volume of the grammar additions is also expected to be moderate.
+The build process will concatenate the ancestor grammar to the one defined in [funnier.ohm.t](src/funnier.ohm.t) before processing it with the Ohm toolchain. Since the number of additional language constructs is not that large, the volume of the grammar additions is also expected to be moderate.
 
 ## Tasks
 
@@ -18,7 +20,7 @@ The build process will concatenate the ancestor grammar to the one defined in [f
 ## Evaluation
 
 - C | 3 | Hey, Not Too Rough:
-  - Implement support for the Funnier annotations specified as *conditions*
+  - Implement support for the Funny annotations specified as *conditions*
 - B | 4 | Hurt Me Plenty:
   - Implement support for the quantifiers in predicates
 - A | 5 | Ultra-Violence:

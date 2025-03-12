@@ -2,12 +2,12 @@
 
 [[RU](README.ru.md)|EN]
 
-This excercise builds upon the grammar from the [Lab 03](../lab03/) parsed via parser from [Lab 04] (../lab04/) to build a mini-compiler for the arithmetic expressions into the WebAssembly instruction format.
+This excercise builds upon the grammar from the [Lab 03](../lab03/README.md) parsed via parser from [Lab 04] (../lab04/README.md) to build a mini-compiler for the arithmetic expressions into the WebAssembly instruction format.
 
 ## Goal
 
 In this lab we will practice compiling the code into the Wasm bytecode. More info on the WebAssembly virtual machine can be found on the [Wasm Project homepage][wasm].
-Note that we're steering away from the approach used in [Lab 03](../lab03) for the function arguments passing.
+Note that we're steering away from the approach used in [Lab 03](../lab03/README.md) for the function arguments passing.
 Passing arguments of the complex types (like dictionaries) to Wasm is cumbersome. It is much easier to pass a few numeric arguments.
 Therefore we will try *inferring the function signature* from the body.
 Idea is to list all the variables used in the expression (in the order of their appearance), and make them the function parameters:
@@ -20,7 +20,7 @@ Idea is to list all the variables used in the expression (in the order of their 
 The process of building the parameters list should better be split into a separate function, so later we can replace it by a different implementation. Someday we might want to add some formal parameters to the function despite them not being used within its body; that's why we'd make this list an explicit parameter of the [`buildFunction`](src/compiler.ts) function.
 
 Wasm VM is a 'stack machine with variables', just like [JVM] or [CLR].
-I.e. all operations are performed on the stack. In some sense, we need to convert an infix expression into a Reverse Polish Notation studied at [Lab 02](../lab02/). The [`wasm`](../wasm/) package served within this excercise course does hide this away to offer the better type safety when emitting Wasm code, but under the hood all arithmetics is applied to the stack values.
+I.e. all operations are performed on the stack. In some sense, we need to convert an infix expression into a Reverse Polish Notation studied at [Lab 02](../lab02/README.md). The [`wasm`](../wasm/) package served within this excercise course does hide this away to offer the better type safety when emitting Wasm code, but under the hood all arithmetics is applied to the stack values.
 Constants are loaded to the stack as the immediate values within the bytecode instruction. The function arguments are loaded by index, so local number 0 refers to the first argument of the function, local number 1 refers to the second one, and so on.
 
 The last value on the stack when function finishes becomes its return value.

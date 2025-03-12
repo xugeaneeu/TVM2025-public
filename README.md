@@ -3,14 +3,14 @@
 [[RU](README.ru.md)|EN]
 
 This is the set of hands-on excercises to support the lecture course of Translation and Verification Methods taught on
-[FIT NSU](https://www.nsu.ru/n/information-technologies-department/) as a part of the [09.03.01](https://www.nsu.ru/n/information-technologies-department/education_fit/programs/OOP/09-03-01/piikn/piikn.php) education program.
+[FIT NSU][FIT] as a part of the [09.03.01] education program.
 
 ## Introduction
 
 This set of excercises aims at building the verifying translator from a toy language [Funny](funny.md) into WASM.
 The code of these excercises is based on the following technologies:
 
-- Implementation language: [Typescript](https://www.typescriptlang.org/)
+- Implementation language: [Typescript][TS]
 - Execution environment: [Node.js](https://nodejs.org/)
 - Compilation target: [Wasm](https://webassembly.org/)
 - Theorem prover: [Z3](https://github.com/Z3Prover/z3) via the [z3-solver](https://www.npmjs.com/package/z3-solver) package
@@ -28,33 +28,33 @@ To verify the solutions, one should use the built-in test framework: specify the
 
 The recommended order of implementation is starting from Lab 01 and proceeding sequentially through Lab 11:
 
-- [Lab 01](./lab01/): Addition and Multiplication
-- [Lab 02](./lab02/): Reverse Polish Notation
-- [Lab 03](./lab03/): Arithmetic Expressions
-- [Lab 04](./lab04/): Parsing Arithmetics to AST
-- [Lab 05](./lab05/): Compiling to Wasm
-- [Lab 06](./lab06/): Symbolic Derivation
-- [Lab 07](./lab07/): Symbolic Simplification
-- [Lab 08](./lab08/): Parsing Funny
-- [Lab 09](./lab09/): Compiling Funny
-- [Lab 10](./lab10/): Parsing Funnier
-- [Lab 11](./lab11/): Verifying Funnier
+- [Lab 01](./lab01/README.md): Addition and Multiplication
+- [Lab 02](./lab02/README.md): Reverse Polish Notation
+- [Lab 03](./lab03/README.md): Arithmetic Expressions
+- [Lab 04](./lab04/README.md): Parsing Arithmetics to AST
+- [Lab 05](./lab05/README.md): Compiling to Wasm
+- [Lab 06](./lab06/README.md): Symbolic Derivation
+- [Lab 07](./lab07/README.md): Algebraic Simplification
+- [Lab 08](./lab08/README.md): Parsing Funny
+- [Lab 09](./lab09/README.md): Compiling Funny
+- [Lab 10](./lab10/README.md): Parsing Funny Annotations
+- [Lab 11](./lab11/README.md): Verifying Funny
 
 Some of the labs can be done out-of-order, but many do depend on each other. Here is the complete dependency map:
 
 ```mermaid
 flowchart LR
-    Lab01[<a href="./lab01">Lab01</a>]
-    Lab02[<a href="./lab02">Lab02</a>]
-    Lab03[<a href="./lab03">Lab03</a>]
-    Lab04[<a href="./lab04">Lab04</a>]
-    Lab05[<a href="./lab05">Lab05</a>]
-    Lab06[<a href="./lab06">Lab06</a>]
-    Lab07[<a href="./lab07">Lab07</a>]
-    Lab08[<a href="./lab08">Lab08</a>]
-    Lab09[<a href="./lab09">Lab09</a>]
-    Lab10[<a href="./lab10">Lab10</a>]
-    Lab11[<a href="./lab11">Lab11</a>]
+    Lab01[<a href="./lab01/README.md">Lab01</a>]
+    Lab02[<a href="./lab02/README.md">Lab02</a>]
+    Lab03[<a href="./lab03/README.md">Lab03</a>]
+    Lab04[<a href="./lab04/README.md">Lab04</a>]
+    Lab05[<a href="./lab05/README.md">Lab05</a>]
+    Lab06[<a href="./lab06/README.md">Lab06</a>]
+    Lab07[<a href="./lab07/README.md">Lab07</a>]
+    Lab08[<a href="./lab08/README.md">Lab08</a>]
+    Lab09[<a href="./lab09/README.md">Lab09</a>]
+    Lab10[<a href="./lab10/README.md">Lab10</a>]
+    Lab11[<a href="./lab11/README.md">Lab11</a>]
 
     
     Lab03 --> Lab04
@@ -77,14 +77,14 @@ This approach ensures smart resource allocation - if one doesn't have enough tim
 
 ## Prerequisites and Installation
 
-1. Download and install Node.js with pnpm for your platform: [https://nodejs.org/en/download](https://nodejs.org/en/download)
+1. Download and install Node.js with pnpm for your platform: [https://nodejs.org/en/download][nodejs-dl]
 2. Checkout this project.
 3. Run a terminal at the project root location and execute
 
    `pnpm install -r`
 
    This will download and install the dependencies for all the labs
-4. (Optional) download and install VS Code: [https://code.visualstudio.com/Download](https://code.visualstudio.com/Download)
+4. (Optional) download and install VS Code: [https://code.visualstudio.com/Download][vscode-dl]
    - Install recommended extensions. Support for JavaScript and TypeScript is included in VS Code out of the box.
    Two extra tools would be handy
       - *Jest* extension helps you running the unit tests (that are going to be the basis of the excercise acceptance)
@@ -98,3 +98,9 @@ This approach ensures smart resource allocation - if one doesn't have enough tim
    **Note**: don't forget to set the desired mark via the `desiredMark.json`!
    - **VS Code**: switch to the Testing tab, hover the project root, click "Run Tests" icon
    - **CLI**: run the `jest``command at the project root
+
+[nodejs-dl]: https://nodejs.org/en/download
+[vscode-dl]: https://code.visualstudio.com/Download
+[FIT]: https://www.nsu.ru/n/information-technologies-department/
+[09.03.01]: https://www.nsu.ru/n/information-technologies-department/education_fit/programs/OOP/09-03-01/piikn/piikn.php
+[TS]: https://www.typescriptlang.org/

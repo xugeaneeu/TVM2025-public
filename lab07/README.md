@@ -1,4 +1,4 @@
-# Lab 07: Symbolic Simplification
+# Lab 07: Algebraic Simplification
 
 [[RU](README.ru.md)|EN]
 
@@ -7,13 +7,13 @@ More specifically, we will practice *algebraic* optimizations.
 
 ## Goal
 
-The [previous lab](../lab06) contains a subtask that performs a limited subset of *expression optimizations*. Since we know for sure that multiplying any `x` by `1` yields `x`, and multiplying by `0` yields `0`, in both cases we don't need to perform the multiplication *despite the runtime value* of `x`.
+The [previous lab](../lab06/README.md) contains a subtask that performs a limited subset of *expression optimizations*. Since we know for sure that multiplying any `x` by `1` yields `x`, and multiplying by `0` yields `0`, in both cases we don't need to perform the multiplication *despite the runtime value* of `x`.
 
 Intuitively, we expect the "shorter" form of the expression to be more efficient, as it requires less operations to be performed. In a more general case, though, the decision might be not so obvious: the number of operations might be the same, but their efficiency might differ. Some of the real-world compilers do contain quite sophisticated models of the target processors to make the educated decisions on the optimization choices.
 
 We will formalize this as a special function `cost` that should assign every expression a non-negative integer value; the less is this value the "more optimal" the expression is.
 
-Next, we will extend the naive approach taken in [previous lab](../lab06) to a broader set of identities - e.g. whenever we see an expression that has the form `x - x` we can replace it by `0`, and so on. However, hardcoding every addition to this list of identities makes our simplification code more and more complicated.
+Next, we will extend the naive approach taken in [previous lab](../lab06/README.md) to a broader set of identities - e.g. whenever we see an expression that has the form `x - x` we can replace it by `0`, and so on. However, hardcoding every addition to this list of identities makes our simplification code more and more complicated.
 How can we be (reasonably) sure that we have exhausted all the optimization possibilities?
 
 Another issue is an applicability of the identities. The real programs are not limited to operate on the integers; there might be some other data types where the list of identities is different. It seems counterproductive to write a separate algorithm per every datatype to, say, optimize the vector/matrix operations, or floating-point operations, or timestamp/interval operations and so on.

@@ -7,7 +7,7 @@ The purpose of this excercise is to practice creating the grammars for micro-lan
 ## Goal
 
 You are going to implement a calculator that supports addition and multiplication written in the [Reverse Polish Notation][RPN] (RPN).
-The "regular" arithmetic expressions implemented in the [previous lab](../lab01/) do use so-called *infix* form, where the operator is placed *between* the operands. The Reverse Polish Notation places the operator *after* the operands, so it uses a *postfix* notation.
+The "regular" arithmetic expressions implemented in the [previous lab](../lab01/README.md) do use so-called *infix* form, where the operator is placed *between* the operands. The Reverse Polish Notation places the operator *after* the operands, so it uses a *postfix* notation.
 
 Don't confuse it with the Polish Notation, where the operator is placed *before* the operands.
 
@@ -29,7 +29,7 @@ Note that this grammar does not need any kind of parentheses or priority rules: 
 
 1. Create a PEG grammar for the arithmetic expressions described by the EBNF above, using the Ohm library syntax.  
   The empty grammar template is supplied at the file [rpn.ohm](src/rpn.ohm). Fill it with the necessary rules.
-2. Implement and export the composite function `evaluate(content: string): number` at [index.ts](src/index.ts) with the properties similar to the analogous function in the [previous lab](../lab01/).
+2. Implement and export the composite function `evaluate(content: string): number` at [index.ts](src/index.ts) with the properties similar to the analogous function in the [previous lab](../lab01/README.md).
 3. Implement and export the function `maxStackDepth(content: string): number` at [index.ts](src/index.ts) that returns the max stack depth required for a valid RPN expression or throws a `SyntaxError` for an invalid input.
 
 ## Evaluation

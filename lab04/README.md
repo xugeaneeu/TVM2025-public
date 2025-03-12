@@ -2,7 +2,7 @@
 
 [[RU](README.ru.md)|EN]
 
-This lab will use the grammar from the [previous lab](../lab03) to build an [*Abstract Syntax Tree*][AST] for the subsequent excercises.
+This lab will use the grammar from the [previous lab](../lab03/README.md) to build an [*Abstract Syntax Tree*][AST] for the subsequent excercises.
 
 ## Goal
 

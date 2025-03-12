@@ -2,7 +2,7 @@
 
 [[RU](README.ru.md)|EN]
 
-This excercise builds upon the AST from the [Lab 04](../lab04) to build a tiny symbolic calculator capable of performing a partial derivation of a multi-argument function
+This excercise builds upon the AST from the [Lab 04](../lab04/README.md) to build a tiny symbolic calculator capable of performing a partial derivation of a multi-argument function
 
 ## Goal
 
@@ -13,7 +13,7 @@ From the mathematics standpoint, derivation is an example of a Higher-Order Func
 However, in the code it looks like a regular function, since the functions it operates upon are represented in a *symbolic* form - as we've previously discussed, `Expr` instance can be seen as a function of several variables.
 
 Now, we're going to build a *partial derivative* of this function in respect to the specified variable.
-In order to verify the results, we would also compile this function using the results of [Lab05](../lab05/) and check the value in a few points.
+In order to verify the results, we would also compile this function using the results of [Lab05](../lab05/README.md) and check the value in a few points.
 
 ## Tasks
 

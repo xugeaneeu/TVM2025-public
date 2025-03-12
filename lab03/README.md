@@ -2,7 +2,7 @@
 
 [[RU](README.ru.md)|EN]
 
-This excercise extends the [Lab 01](../lab01/) to the full "school arithmetics" support, adding subtraction, division, unary negation, and variables to the expression language. The purpose of this is to get acquainted with the sophisticated features of the Ohm library, such as action parameters and left recursion support.
+This excercise extends the [Lab 01](../lab01/README.md) to the full "school arithmetics" support, adding subtraction, division, unary negation, and variables to the expression language. The purpose of this is to get acquainted with the sophisticated features of the Ohm library, such as action parameters and left recursion support.
 
 ## Goal
 
@@ -37,7 +37,7 @@ Note that this grammar requires additional disambiguation beyond operation prior
 
 1. Create a PEG grammar for the arithmetic expressions described by the EBNF above, using the Ohm library syntax.  
   The empty grammar template is supplied at the file [arith.ohm](src/arith.ohm). Fill it with the necessary rules.
-2. Implement and export the composite function `evaluate(content: string): number` at [index.ts](src/index.ts) with the properties similar to the analogous function in the [Lab 01](../lab01/).
+2. Implement and export the composite function `evaluate(content: string): number` at [index.ts](src/index.ts) with the properties similar to the analogous function in the [Lab 01](../lab01/README.md).
 
 ## Evaluation
 

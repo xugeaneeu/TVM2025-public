@@ -207,7 +207,7 @@ Note that semicolon is not a "statement separator" - it is a part of the assignm
 
 ## Expressions
 
-The Funny expressions are basically the same as in [Lab 03](./lab03/), with two additional atoms:
+The Funny expressions are basically the same as in [Lab 03](./lab03/README.md), with two additional atoms:
 
 ```EBNF
 expr = 
@@ -247,7 +247,7 @@ length(a: int[]) returns l: int
 
 ### Array Access
 
-Array access expression allows to read an array element value:
+Array access operation allows to read an array element value:
 
 ```EBNF
 arrayAccess = varName "[" expr "]"
