@@ -125,7 +125,7 @@ Formula is a special kind of function to be used in the predicates. It does neve
 ```EBNF
 formula = identifier                            (* formula name *)
     "(" [ variableDef {"," variableDef  } ] ")" (* formula parameter(s) *)
-    "=> " predicate;                            (* formula body *)
+    "=>" predicate;                             (* formula body *)
 ```
 
 ## Statements
@@ -142,17 +142,17 @@ Assignment statement has the following form:
 
 ```EBNF
 assignment = 
-    varName = expr ";"
-    | arrayAccess = expr ";"
-    | varName { "," varName } = functionCall ";"
+    varName "=" expr ";"                           (* simple assignment *)
+    | arrayAccess "=" expr ";"                     (* modifying an array element *)
+    | varName { "," varName } "=" functionCall ";" (* tuple assignment *)
 ```
 
 The latter form is a tuple assignment; it applies to the functions returning multiple results. See the [Function Call](#function-call) subsection below for more detail.
 
-Note that the function parameters are treated as read-only - those cannot be used on the left side of the assignment statement. This covers the arrays as well - a read-only array cannot be used on the left side of the assignment.
+Note that the function parameters are treated as read-only - those cannot be used on the left side of the assignment statement. This covers the arrays as well - an array-type parameter cannot be used on the left side of the assignment.
 
 Both local variables and output parameters are treated as read-write.
-Reading before an explicit assignment is not an error, but the contents of the unitialized variables are undefined.
+Reading before the initial assignment is not an error, but the contents of the unitialized variables are undefined.
 
 ### Conditional Statement
 
@@ -193,7 +193,7 @@ while = "while" "(" condition ")"
     statement;
 ```
 
-If omitted, the loop invariant is assumed to be `true`. This clause is intentionally made optional just like the [function](#functions-and-types) pre- and post-conditions, for the same reasons.
+If omitted, the loop invariant is assumed to be `true`. This clause is intentionally made optional for the same reasons as the [function](#functions-and-types) pre- and post-conditions.
 
 ### Block Statement
 
