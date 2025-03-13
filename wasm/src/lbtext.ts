@@ -1,7 +1,6 @@
 // Linear bytecode textual representation.
 // https://github.com/WebAssembly/design/blob/master/TextFormat.md
 //
-import { match, P } from 'ts-pattern';
 import { uint8 } from './basic-types';
 import { opcodes } from './info'
 import { t, N,  OpCode, instr_atom, instr_imm1, instr_pre, instr_pre1, instr_imm1_post, instr_pre_imm, instr_pre_imm_post } from './ast'
@@ -71,36 +70,38 @@ function visitOps(nodes :N[], c :Ctx, depth :number) {
 
 function visitOp(n: N, c: Ctx, depth: number) {
   // const tname = style(symname(n.t), '92')
-  match(n)
-  .with(P.instanceOf(instr_atom), n => {
+  if(n instanceof instr_atom)
+  {
       if (n.v == 0x0b/*end*/ || n.v == 0x05/*else*/) 
         depth--;
       c.writeln(depth, opcodes[n.v]);
-  })
-  .with(P.instanceOf(instr_imm1), n => 
-      c.writeln(depth, opcodes[n.v] + ' ' + fmtimm(n.imm)))
-  .with(P.instanceOf(instr_pre), n => {
+      return;
+  } else if(n instanceof instr_imm1)
+  { 
+      c.writeln(depth, opcodes[n.v] + ' ' + fmtimm(n.imm))
+  } else if(n instanceof instr_pre)
+  {
       visitOps(n.pre, c, depth)
       c.writeln(depth, opcodes[n.v])
-  })
-  .with(P.instanceOf(instr_pre1), n => {
+  } else if(n instanceof instr_pre1)
+  {
       visitOp(n.pre, c, depth)
       c.writeln(depth, opcodes[n.v])
-  })
-  .with(P.instanceOf(instr_imm1_post), n => {
+  } else if(n instanceof instr_imm1_post)
+  {
       c.writeln(depth, opcodes[n.v] + ' ' + fmtimm(n.imm))
       visitOps(n.post, c, depth + 1)
-  })
-  .with(P.instanceOf(instr_pre_imm), n => {
+  } else if(n instanceof instr_pre_imm)
+  {
       visitOps(n.pre, c, depth)
       c.writeln(depth, opcodes[n.v] + fmtimmv(n.imm))
-  })
-  .with(P.instanceOf(instr_pre_imm_post), n => {
+  } else if (n instanceof instr_pre_imm_post)
+  {
       visitOps(n.pre, c, depth)
       c.writeln(depth, opcodes[n.v] + fmtimmv(n.imm))
       visitOps(n.post, c, depth + 1)
-  })
-  .otherwise(n => { throw new Error('unexpected op ' + n.t.toString())});
+  }
+  else throw new Error('unexpected op ' + n.t.toString());
 }
 
 export function printCode(instructions: N[], writer: Writer) {

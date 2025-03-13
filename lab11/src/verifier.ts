@@ -1,7 +1,7 @@
-import assert from "assert";
-import { ResolvedAnnotatedFunction, ResolvedAnnotatedModule } from "../../lab10";
-import { match } from "ts-pattern";
 import { Arith, ArithSort, Bool, Context, init, Model, SMTArray, SMTArraySort } from "z3-solver";
+
+import { ResolvedAnnotatedFunction, ResolvedAnnotatedModule } from "../../lab10";
+
 import { printZ3Model } from "./printZ3Model";
 
 
@@ -24,12 +24,8 @@ export async function verifyModule(module: ResolvedAnnotatedModule)
         const conditions = buildFunctionVerificationConditions(f);
         const z3theorem = convertConditionsToZ3(conditions);
         const res = await proveTheorem(z3theorem);
-        match(res)
-        .with("ok", _ => { // ok!
-        })
-        .otherwise(m => {
-            throw new Error(`Error: function doesn't match the specification. Here is how:\n` + printZ3Model(m))
-        });
+        if(res!="ok")
+            throw new Error(`Error: function doesn't match the specification. Here is how:\n` + printZ3Model(res))
     }
 }
 

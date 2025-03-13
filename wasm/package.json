@@ -13,8 +13,5 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "ts-pattern": "5.6.0"
-  }
+  "license": "ISC"
 }

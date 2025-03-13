@@ -1,4 +1,3 @@
-import { match, P } from "ts-pattern";
 import { AnnotatedModule } from './funnier';
 
 export interface ResolvedAnnotatedModule extends AnnotatedModule
