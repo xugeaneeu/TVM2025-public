@@ -43,4 +43,5 @@ This lab is prepared to do just this: the language grammar is put into a [templa
     - Function call argument types and number must match the function parameter list
 - A | 5 | Ultra-Violence:
   - Report the error location in semantic errors
+  - Add the warnings reporting on unused variables and parameters
   

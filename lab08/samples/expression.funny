@@ -1,4 +1,0 @@
-expression() returns x: int
-{
-    x = 6*7;
-}

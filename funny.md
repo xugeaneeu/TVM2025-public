@@ -268,6 +268,7 @@ condition =
   | "not" condition
   | condition "and" condition
   | condition "or" condition
+  | condition "->" condition
   | "(" condition ")";
 
 comparison = 

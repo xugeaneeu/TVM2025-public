@@ -1,8 +1,8 @@
 import { getExprAst } from '../../lab04';
 import * as ast from './funny';
 
-import grammar from './funny.ohm-bundle';
-import { FunnyActionDict } from './funny.ohm-bundle';
+import grammar, { FunnyActionDict } from './funny.ohm-bundle';
+
 import { MatchResult, Semantics } from 'ohm-js';
 
 export const getFunnyAst = {

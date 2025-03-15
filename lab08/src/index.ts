@@ -1,20 +1,16 @@
 
 export class FunnyError extends Error {
-    code: string;
-    startLine: number;
-    startCol: number;
-    endLine: number;
-    endCol: number;
-    constructor(code: string, message: string, startLine: number, startCol?:number, endCol?:number, endLine?: number)
+    constructor(
+        message: string,
+        public readonly code: string, 
+        public readonly startLine: number, 
+        public readonly startCol?:number, 
+        public readonly endCol?:number, 
+        public readonly endLine?: number)
     {
         super(message);
-        this.code = code;
-        this.startLine = startLine;
-        this.startCol = startCol ?? 0;
-        this.endCol = endCol ?? this.startCol;
-        this.endLine = endLine ?? this.startLine;
     }
 }
 
-export { parseFunny, getFunnyAst  } from './parser';
+export * from './parser';
 export * from './funny';
