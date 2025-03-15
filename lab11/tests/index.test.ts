@@ -28,12 +28,12 @@ const testRe = /^(?<name>.*?)($|(\.Error\.(?<startLine>\d+)(\.(?<startCol>\d+)((
 //     return fm.expression();
 // }
 
-describe('12. Testing the sample files', () => {
+describe('11. Testing the sample files', () => {
     // test('call', 4, testCall, 86, 2);
     // test('constant', 4, testConstant, 42);
     // test('expression', 4, testExpression, 42);
     // test('factorial', 4, testFactorial, 120, 5);
-    const sampleDir = "./solutions/lab11/samples";
+    const sampleDir = "./lab10/samples";
     let files = readdirSync(sampleDir, {withFileTypes: true, recursive:true});
     //console.log(files);
     for(const file of files)

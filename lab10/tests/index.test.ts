@@ -7,8 +7,8 @@ import { parseAndResolveFunnier } from '../src';
   
 const testRe = /^(?<name>.*?)($|(\.Error\.(?<startLine>\d+)(\.(?<startCol>\d+)((-(?<endLine>\d+)\.)?(?<end>\d+))?)?))/;
 
-describe('9. Testing the sample files', () => {
-    const sampleDir = "./solutions/lab11/samples";
+describe('10. Testing the sample files', () => {
+    const sampleDir = "./lab10/samples";
     let files = readdirSync(sampleDir, {withFileTypes: true, recursive:true});
     //console.log(files);
     for(const file of files)

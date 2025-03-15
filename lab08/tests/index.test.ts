@@ -7,7 +7,7 @@ import { join as pathJoin, parse as pathParse} from 'path';
 const testRe = /^(?<name>.*?)($|(\.Error\.(?<startLine>\d+)(\.(?<startCol>\d+)((-(?<endLine>\d+)\.)?(?<end>\d+))?)?))/;
 
 describe('08. Testing the sample files', () => {
-    const sampleDir = "./solutions/lab09/samples";
+    const sampleDir = "./solutions/lab08/samples";
     let files = readdirSync(sampleDir, {withFileTypes: true, recursive:true});
     //console.log(files);
     for(const file of files)

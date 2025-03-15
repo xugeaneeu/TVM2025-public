@@ -9,7 +9,7 @@
     "out/**/*.d.ts"
   ],
   "scripts": {
-    "build": "pnpm install && tsc --build"
+    "build": "tsc --build"
   },
   "keywords": [],
   "author": "",

@@ -12,3 +12,5 @@ export async function compileModule(m: ResolvedModule): Promise<WebAssembly.Expo
 {
     throw "Not implemented";
 }
+
+export class FunnyError extends Error {};
