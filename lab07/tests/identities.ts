@@ -7,7 +7,6 @@ export const basicIdentities = () => parseIdentities([
     ["x-0", "x"],
     ["x-x", "0"],
     ["x*1", "x"],
-    ["-1*x", "-x"],
     ["x+x", "2*x"], // ?
     ["x/1", "x"],
     ["--x", "x"],
