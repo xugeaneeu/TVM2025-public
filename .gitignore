@@ -44,3 +44,6 @@ test/*.js
 *.ohm-bundle.js
 *.ohm-bundle.d.ts
 *.tsbuildinfo
+# Manually-generated ohm
+lab08/src/funny.ohm
+lab10/src/funnier.ohm

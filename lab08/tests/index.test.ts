@@ -1,10 +1,12 @@
+import { desiredMark } from '../../desiredMark.json';
+import { DesiredMark } from '../../mark';
 import { FunnyError, parseFunny } from '../src';
 import { 
     readFileSync, 
     readdirSync  } from 'fs';
 import { join as pathJoin, parse as pathParse} from 'path';
   
-const testRe = /^(?<name>.*?)($|(\.Error\.(?<startLine>\d+)(\.(?<startCol>\d+)((-(?<endLine>\d+)\.)?(?<end>\d+))?)?))/;
+const testRe = /^(?<mark>[^\.]+)\.(?<name>.*?)($|(\.Error\.(?<startLine>\d+)(\.(?<startCol>\d+)((-(?<endLine>\d+)\.)?(?<end>\d+))?)?))/;
 
 describe('08. Testing the sample files', () => {
     const sampleDir = "./lab08/samples";
@@ -20,20 +22,25 @@ describe('08. Testing the sample files', () => {
             const name = filePath.name.replaceAll(".", " ");
             const sample = readFileSync(filePathString, 'utf-8');
             const m = filePath.base.match(testRe);
-            if(m && m.groups && m.groups.startLine)
+            if(m && m.groups)
             {
-                const startLine = Number.parseInt(m.groups.startLine);
-                const startCol = m.groups.start ? Number.parseInt(m.groups.start) : undefined;
-                const endLine = m.groups.endLine ? Number.parseInt(m.groups.endLine): undefined;
-                const endCol = m.groups.end ? Number.parseInt(m.groups.end): undefined;
-                const name = m.groups.name.replaceAll(".", " ");
-                test(name, () => expect( () =>parseFunny(sample)).toThrow(new FunnyError("0", "f", startLine, startCol, endLine, endCol)));
-       
-                //console.log(pathJoin(file.parentPath, file.name));
+                if(m.groups.mark as DesiredMark > desiredMark)
+                    test.skip(name, ()=>{})
+                else
+                    if(m.groups.startLine)
+                    {
+                        const startLine = Number.parseInt(m.groups.startLine);
+                        const startCol = m.groups.start ? Number.parseInt(m.groups.start) : undefined;
+                        const endLine = m.groups.endLine ? Number.parseInt(m.groups.endLine): undefined;
+                        const endCol = m.groups.end ? Number.parseInt(m.groups.end): undefined;
+                        const name = m.groups.name.replaceAll(".", " ");
+                        test(name, () => expect( () => parseFunny(sample)).toThrow(new FunnyError("0", "f", startLine, startCol, endLine, endCol)));
+            
+                        //console.log(pathJoin(file.parentPath, file.name));
+                    }
+                    else // no error specified in the file name
+                        test(name, () => expect( () => parseFunny(sample)).not.toThrow())
             }
-            else // no error specified in the file name
-                test(name, () => expect( () =>parseFunny(sample)).not.toThrow())
-
         }
     }
 });
