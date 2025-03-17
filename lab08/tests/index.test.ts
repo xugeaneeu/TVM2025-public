@@ -33,8 +33,9 @@ describe('08. Testing the sample files', () => {
                         const startCol = m.groups.start ? Number.parseInt(m.groups.start) : undefined;
                         const endLine = m.groups.endLine ? Number.parseInt(m.groups.endLine): undefined;
                         const endCol = m.groups.end ? Number.parseInt(m.groups.end): undefined;
-                        const name = m.groups.name.replaceAll(".", " ");
-                        test(name, () => expect( () => parseFunny(sample)).toThrow(new FunnyError("0", "f", startLine, startCol, endLine, endCol)));
+                        // const name = m.groups.name.replaceAll(".", " ");
+                        test(name, () => expect( () => parseFunny(sample)).toThrow(
+                            expect.objectContaining({startLine, startCol, endLine, endCol})));
             
                         //console.log(pathJoin(file.parentPath, file.name));
                     }
