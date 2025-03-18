@@ -36,10 +36,10 @@ async function testOneResult<T = number>(fileName: string, funcName: string, ...
 // }
 
 describe('Testing the sample programs', () => {
-    test('constant', 3, testOneResult<number>, 42, 'fortyTwo', 'fortyTwo');
-    test('expression', 3, testOneResult<number>, 42, 'sixBySeven', 'sixBySeven');
-    test('increment', 3, testOneResult<number>, 42, 'increment', 'increment', 41);
-    test('call', 4, testOneResult<number>, 86, 'call', 'bar', 2);
+    test('constant', 3, testOneResult<number>, 42, '3.fortyTwo', 'fortyTwo');
+    test('expression', 3, testOneResult<number>, 42, '3.sixBySeven', 'sixBySeven');
+    test('increment', 3, testOneResult<number>, 42, '3.increment', 'increment', 41);
+    test('call', 4, testOneResult<number>, 86, '4.call', 'bar', 2);
 });
 
 
