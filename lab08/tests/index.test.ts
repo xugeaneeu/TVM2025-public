@@ -5,11 +5,12 @@ import {
     readFileSync, 
     readdirSync  } from 'fs';
 import { join as pathJoin, parse as pathParse} from 'path';
-  
+export const sampleDir = "./lab08/samples";
+
 const testRe = /^(?<mark>[^\.]+)\.(?<name>.*?)($|(\.Error\.(?<startLine>\d+)(\.(?<startCol>\d+)((-(?<endLine>\d+)\.)?(?<endCol>\d+))?)?))/;
 
 describe('08. Testing the sample files', () => {
-    const sampleDir = "./lab08/samples";
+
     let files = readdirSync(sampleDir, {withFileTypes: true, recursive:true});
     //console.log(files);
     for(const file of files)

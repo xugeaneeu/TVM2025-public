@@ -1,66 +1,45 @@
 import { readFileSync } from "fs";
-// import { join as pathJoin, parse as pathParse} from 'path';
-import { test } from "../../mark/out";
+import { join as pathJoin, parse as pathParse} from 'path';
+import { test } from "../../mark";
 import { parseAndCompile } from "../src";
 
-// const testRe = /^(?<name>.*?)($|(\.Error\.(?<startLine>\d+)(\.(?<startCol>\d+)((-(?<endLine>\d+)\.)?(?<end>\d+))?)?))/;
+import { sampleDir } from '../../lab08/tests/index.test';
 
-async function testFactorial(a: number): Promise<number>
+
+async function testOneResult<T = number>(fileName: string, funcName: string, ...args: number[]): Promise<T>
 {
-    const fm = await parseAndCompile(readFileSync('./solutions/lab09/samples/factorial_recursive.funny', 'utf-8'));
-    return fm.factorial(a);
+    const module = await parseAndCompile(readFileSync(pathJoin(sampleDir, fileName+'.funny'), 'utf-8'));
+    return module[funcName](...args);
 }
 
-async function testCall(a: number): Promise<number>
-{
-    const fm = await parseAndCompile(readFileSync('./solutions/lab09/samples/call.funny', 'utf-8'));
-    return fm.bar(a);
-}
+// async function testFactorial(a: number): Promise<number>
+// {
+//     const fm = await parseAndCompile(readFileSync(pathJoin(sampleDir, 'factorial_recursive.funny'), 'utf-8'));
+//     return fm.factorial(a);
+// }
 
-async function testConstant(): Promise<number>
-{
-    const fm = await parseAndCompile(readFileSync('./solutions/lab09/samples/constant.funny', 'utf-8'));
-    return fm.constant();
-}
-async function testExpression(): Promise<number>
-{
-    const fm = await parseAndCompile(readFileSync('./solutions/lab09/samples/expression.funny', 'utf-8'));
-    return fm.expression();
-}
+// async function testCall(a: number): Promise<number>
+// {
+//     const fm = await parseAndCompile(readFileSync(pathJoin(sampleDir, 'call.funny'), 'utf-8'));
+//     return fm.bar(a);
+// }
 
-describe('10. Testing the sample files', () => {
-    test('call', 4, testCall, 86, 2);
-    test('constant', 4, testConstant, 42);
-    test('expression', 4, testExpression, 42);
-    test('factorial', 4, testFactorial, 120, 5);
-    // const sampleDir = "./solutions/lab09/samples";
-    // let files = readdirSync(sampleDir, {withFileTypes: true, recursive:true});
-    // //console.log(files);
-    // for(const file of files)
-    // {
-    //     const filePathString = pathJoin(file.parentPath, file.name);
-    //     const filePath = pathParse(filePathString);
-    
-    //     if (!file.isDirectory() && filePath.ext == ".funny")
-    //     {
-    //         const name = filePath.name.replaceAll(".", " ");
-    //         const sample = readFileSync(filePathString, 'utf-8');
-    //         const m = filePath.base.match(testRe);
-    //         if(m && m.groups && m.groups.startLine)
-    //         {
-    //             // const startLine = Number.parseInt(m.groups.startLine);
-    //             // const startCol = m.groups.start ? Number.parseInt(m.groups.start) : undefined;
-    //             // const endLine = m.groups.endLine ? Number.parseInt(m.groups.endLine): undefined;
-    //             // const endCol = m.groups.end ? Number.parseInt(m.groups.end): undefined;
-    //             // const name = m.groups.name.replaceAll(".", " ");
-    //             test(name, 4, parseAndCompile, Error, sample);
-       
-    //             //console.log(pathJoin(file.parentPath, file.name));
-    //         }
-    //         else // no error specified in the file name
-    //             test(name, 4, parseAndCompile, {}, sample);
-    //     }
-    }
-);
+// async function testConstant(): Promise<number>
+// {
+//     const fm = await parseAndCompile(readFileSync(pathJoin(sampleDir, 'constant.funny'), 'utf-8'));
+//     return fm.constant();
+// }
+// async function testExpression(): Promise<number>
+// {
+//     const fm = await parseAndCompile(readFileSync(pathJoin(sampleDir, 'expression.funny'), 'utf-8'));
+//     return fm.expression();
+// }
+
+describe('Testing the sample programs', () => {
+    test('constant', 3, testOneResult<number>, 42, 'fortyTwo', 'fortyTwo');
+    test('expression', 3, testOneResult<number>, 42, 'sixBySeven', 'sixBySeven');
+    test('increment', 3, testOneResult<number>, 42, 'increment', 'increment', 41);
+    test('call', 4, testOneResult<number>, 86, 'call', 'bar', 2);
+});
 
 
