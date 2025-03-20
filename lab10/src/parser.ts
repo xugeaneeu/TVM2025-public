@@ -1,8 +1,7 @@
-
 import { MatchResult, Semantics } from 'ohm-js';
 
 import grammar, { FunnierActionDict } from './funnier.ohm-bundle';
-import { resolveModule } from './resolver';
+
 import { AnnotatedModule } from './funnier';
 
 const getFunnierAst = {
