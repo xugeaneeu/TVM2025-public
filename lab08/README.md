@@ -30,18 +30,33 @@ This lab is prepared to do just this: the language grammar is put into a [templa
 ## Evaluation
 
 - C | 3 | Hey, Not Too Rough:
-  - Implement the parsing of the Funny syntax
+  - Implement the parsing of the limited Funny syntax, including:
+    - Single-function modules
+    - Int arguments and return values
+    - Single-returning functions
+    - Assignment statements
+    - Block statements
   - Report syntax errors
   - Report the basic semantic errors:
     - Variable redefinition
     - Undeclared identifier
 - B | 4 | Hurt Me Plenty:
+  - Implement support for the additional Funny constucts:
+    - Functions with multiple return values
+    - Multi-function modules
+    - Function calls in expressions
+    - Conditional statements
+    - Loop statements
   - Implement the type safety validation:
     - Assignment target type(s) must match the source expression type(s)
     - Arithmetic operators must be applied only to the integer expressions
     - Array access operators must be applied only to the array expressions
     - Function call argument types and number must match the function parameter list
 - A | 5 | Ultra-Violence:
+  - Implement support for the full Funny syntax except for the annotation-related constructs:
+    - Array parameters and return values
+    - Array element assignments
+    - Tuple assignments
   - Report the error location in semantic errors
   - Add the warnings reporting on unused variables and parameters
   
