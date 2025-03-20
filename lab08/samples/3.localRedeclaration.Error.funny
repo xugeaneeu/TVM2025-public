@@ -1,6 +1,6 @@
 foo(a: int, b: int) 
-    uses c: int, a: int
     returns z: int
+    uses c: int, a: int
 {
     c = a+b;
     d = a-b;
