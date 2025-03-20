@@ -25,6 +25,3 @@ export function parseFunnier(source: string, origin?: string): AnnotatedModule
 {
     throw "Not implemented";
 }
-
-export const parseAndResolveFunnier = (source: string, origin?: string) => 
-    resolveModule(parseFunnier(source, origin));

@@ -10,37 +10,36 @@ export const sampleDir = "./lab08/samples";
 const testRe = /^(?<mark>[^\.]+)\.(?<name>.*?)($|(?<error>\.Error\.(?<startLine>\d+)?(\.(?<startCol>\d+)((-(?<endLine>\d+)\.)?(?<endCol>\d+))?)?))/;
 const parseInt = (s: string) => s ? Number.parseInt(s) : undefined;
 
-describe('08. Testing the sample files', () => {
 
-    let files = readdirSync(sampleDir, {withFileTypes: true, recursive:true});
-    for(const file of files)
-    {
+export function testFilesInFolder(folder: string, parseFunc: (string)=>any) {
+    let files = readdirSync(folder, { withFileTypes: true, recursive: true });
+    for (const file of files) {
         const filePathString = pathJoin(file.parentPath, file.name);
         const filePath = pathParse(filePathString);
-    
-        if (!file.isDirectory() && filePath.ext == ".funny")
-        {
+
+        if (!file.isDirectory() && filePath.ext == ".funny") {
             const name = filePath.name.replaceAll(".", " ");
             const sample = readFileSync(filePathString, 'utf-8');
             const m = filePath.base.match(testRe);
-            if(m && m.groups)
-            {
-                if(m.groups.mark as DesiredMark > desiredMark)
-                    test.skip(name, ()=>{})
-                else
-                    if(m.groups.error)
-                    {
-                        const startLine = parseInt(m.groups.startLine);
-                        const startCol = parseInt(m.groups.startCol);
-                        const endLine = parseInt(m.groups.endLine);
-                        const endCol = parseInt(m.groups.endCol);
-                        test(name, () => expect( () => parseFunny(sample)).toThrow(
-                            expect.objectContaining({startLine, startCol, endLine, endCol})));            
-                    }
-                    else // no error specified in the file name
-                        test(name, () => expect( () => parseFunny(sample)).not.toThrow())
+            if (m && m.groups) {
+                if (m.groups.mark as DesiredMark > desiredMark)
+                    test.skip(name, () => { });
+
+                else if (m.groups.error) {
+                    const startLine = parseInt(m.groups.startLine);
+                    const startCol = parseInt(m.groups.startCol);
+                    const endLine = parseInt(m.groups.endLine);
+                    const endCol = parseInt(m.groups.endCol);
+                    test(name, () => expect(() => parseFunc(sample)).toThrow(
+                        expect.objectContaining({ startLine, startCol, endLine, endCol })));
+                }
+                else // no error specified in the file name
+                    test(name, () => expect(() => parseFunc(sample)).not.toThrow());
             }
         }
     }
-});
+}
 
+describe('08. Testing the sample files', () => {
+    testFilesInFolder(sampleDir, parseFunny);
+});
