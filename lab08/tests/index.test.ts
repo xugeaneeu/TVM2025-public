@@ -11,7 +11,7 @@ const testRe = /^(?<mark>[^\.]+)\.(?<name>.*?)($|(?<error>\.Error\.(?<startLine>
 const parseInt = (s: string) => s ? Number.parseInt(s) : undefined;
 
 
-export function testFilesInFolder(folder: string, parseFunc: (string)=>any) {
+export function testFilesInFolder(folder: string, parseFunc: (source: string)=>any) {
     let files = readdirSync(folder, { withFileTypes: true, recursive: true });
     for (const file of files) {
         const filePathString = pathJoin(file.parentPath, file.name);
