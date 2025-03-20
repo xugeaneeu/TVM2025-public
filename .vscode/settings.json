@@ -14,6 +14,7 @@
         "*.tsx": "${capture}.ts",
         "tsconfig.json": "tsconfig.*.json",
         "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, pnpm-workspace.yaml",
+        "*.ohm.t": "${capture}.ohm",
         "*.ohm": "${capture}.ohm-bundle.js"
     },
     "jest.runMode": "on-demand",
