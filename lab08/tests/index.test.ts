@@ -7,12 +7,12 @@ import {
 import { join as pathJoin, parse as pathParse} from 'path';
 export const sampleDir = "./lab08/samples";
 
-const testRe = /^(?<mark>[^\.]+)\.(?<name>.*?)($|(\.Error\.(?<startLine>\d+)(\.(?<startCol>\d+)((-(?<endLine>\d+)\.)?(?<endCol>\d+))?)?))/;
+const testRe = /^(?<mark>[^\.]+)\.(?<name>.*?)($|(?<error>\.Error\.(?<startLine>\d+)?(\.(?<startCol>\d+)((-(?<endLine>\d+)\.)?(?<endCol>\d+))?)?))/;
+const parseInt = (s: string) => s ? Number.parseInt(s) : undefined;
 
 describe('08. Testing the sample files', () => {
 
     let files = readdirSync(sampleDir, {withFileTypes: true, recursive:true});
-    //console.log(files);
     for(const file of files)
     {
         const filePathString = pathJoin(file.parentPath, file.name);
@@ -28,17 +28,14 @@ describe('08. Testing the sample files', () => {
                 if(m.groups.mark as DesiredMark > desiredMark)
                     test.skip(name, ()=>{})
                 else
-                    if(m.groups.startLine)
+                    if(m.groups.error)
                     {
-                        const startLine = Number.parseInt(m.groups.startLine);
-                        const startCol = m.groups.startCol ? Number.parseInt(m.groups.startCol) : undefined;
-                        const endLine = m.groups.endLine ? Number.parseInt(m.groups.endLine): undefined;
-                        const endCol = m.groups.endCol ? Number.parseInt(m.groups.endCol): undefined;
-                        // const name = m.groups.name.replaceAll(".", " ");
+                        const startLine = parseInt(m.groups.startLine);
+                        const startCol = parseInt(m.groups.startCol);
+                        const endLine = parseInt(m.groups.endLine);
+                        const endCol = parseInt(m.groups.endCol);
                         test(name, () => expect( () => parseFunny(sample)).toThrow(
-                            expect.objectContaining({startLine, startCol, endLine, endCol})));
-            
-                        //console.log(pathJoin(file.parentPath, file.name));
+                            expect.objectContaining({startLine, startCol, endLine, endCol})));            
                     }
                     else // no error specified in the file name
                         test(name, () => expect( () => parseFunny(sample)).not.toThrow())
@@ -46,3 +43,4 @@ describe('08. Testing the sample files', () => {
         }
     }
 });
+
