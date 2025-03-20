@@ -39,5 +39,4 @@ export async function parseAndCompile(source: string): Promise<Record<string, Fu
     return new ExportWrapper(mod);
 }
 
-export * from './resolver';
 export * from './compiler';
