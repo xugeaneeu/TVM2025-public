@@ -6,5 +6,5 @@ describe('11. Testing the sample files', () => {
     testFilesInFolder("./lab10/samples", parseVerifyAndCompile);
 });
 
-afterAll(()=>flushZ3())
+afterAll(() => flushZ3())
 

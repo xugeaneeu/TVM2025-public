@@ -4,17 +4,19 @@ import { printZ3Model } from "./printZ3Model";
 import { AnnotatedModule } from "../../lab10";
 
 
+let z3anchor;
 async function initZ3()
 {
     if(!z3)
     {
-        const Z3C = (await init()).Context;
+        z3anchor = await init();
+        const Z3C = z3anchor.Context;
         z3 = Z3C('main');        
     }
 }
 export function flushZ3()
 {
-    (z3 as any) = null;
+    z3anchor = undefined;
 }
 
 let z3: Context;
