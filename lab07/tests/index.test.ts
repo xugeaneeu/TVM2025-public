@@ -2,7 +2,7 @@ import { test } from "../../mark";
 import { Expr, parseExpr } from "../../lab04";
 
 import { simplify, cost } from "../src";
-import { basicIdentities } from './identities';
+import { basicIdentities, commutativeIdentities } from './identities';
 
 const estimate = (source: string) => cost(parseExpr(source));
 
@@ -35,7 +35,14 @@ describe('Testing simplify function', ()=>
     test("42+0 => 42", 3, parseSimplifyAndCost, 0, "42+0", basicIdentities);
     test("x+0 => x", 3, parseSimplifyAndCost, 1, "a+0", basicIdentities);
     test("x*0 => 0", 3, parseSimplifyAndCost, 0, "a*0", basicIdentities);
-    test("x*(1-1)=>0", 4, parseSimplifyAndCost, 0, "a*(1-1)", basicIdentities);
+    test("x*0*0 => 0", 3, parseSimplifyAndCost, 0, "a*0*0", basicIdentities);
     test("x-0 => x", 3, parseSimplifyAndCost, 1, "x-0", basicIdentities);
+    test("x+0-0 => x", 3, parseSimplifyAndCost, 1, "x+0-0", basicIdentities);
+    test("x*(1-1)=>0", 4, parseSimplifyAndCost, 0, "a*(1-1)", basicIdentities);
+
+    test("x*0*y=>0", 4, parseSimplifyAndCost, 0, "x*0*y", basicIdentities);
+    test("x*(1+0*y)=>x", 4, parseSimplifyAndCost, 0, "x*0*y", basicIdentities);
+
+    test("0+x=>0", 4, parseSimplifyAndCost, 0, "x*0*y", commutativeIdentities);
 });
 
