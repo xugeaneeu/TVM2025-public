@@ -16,7 +16,7 @@
 		"clean": "tsc --build --clean",
 		"typecheck": "tsc --build --emitDeclarationOnly",
 		"postinstall": "syncpack fix-mismatches",
-		"test": "--detectOpenHandles"
+		"test": "jest --detectOpenHandles"
 	},
 	"dependencies": {
 		"@jest/globals": "29.7.0"
