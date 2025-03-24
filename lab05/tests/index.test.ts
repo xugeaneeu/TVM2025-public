@@ -15,8 +15,8 @@ describe('testing addition and multiplication regression', () => {
     test("Multiplication is a valid expression", 3, parseCompileAndExecute, 42, "6*7");
     test("Multiplication is performed before addition (1)", 4, parseCompileAndExecute, 42, "(6*6)+6");
     test("Multiplication is performed before addition (2)", 3, parseCompileAndExecute, 42, "7+5*7");
-    test("Multiplication is performed before addition (3)", 4, parseCompileAndExecute, 42, "6*(6+6)");
-    test("Multiplication is performed before addition (4)", 4, parseCompileAndExecute, 42, "(7+5)*7");
+    test("Multiplication is performed before addition (3)", 4, parseCompileAndExecute, 72, "6*(6+6)");
+    test("Multiplication is performed before addition (4)", 4, parseCompileAndExecute, 84, "(7+5)*7");
     test("Complex expressions are supported", 4, parseCompileAndExecute, 42, "7+2*7+3*6+3");
     test("Parentheses are correctly supported", 4, parseCompileAndExecute, 42, "(2+1)*7+(3*2*3)+2*(1+0)+1");
     test("Extra paren are ok", 4, parseCompileAndExecute, 42, "(2+1)*7+(3*(2)*3)+2*((1+(0)))+1");
