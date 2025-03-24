@@ -49,6 +49,9 @@ importers:
       '@ohm-js/cli':
         specifier: ^2.0.0
         version: 2.0.0(ohm-js@17.1.0)
+      '@tvm/mark':
+        specifier: workspace:*
+        version: link:../mark
       '@types/jest':
         specifier: ^29.5.14
         version: 29.5.14
@@ -71,6 +74,9 @@ importers:
       '@ohm-js/cli':
         specifier: ^2.0.0
         version: 2.0.0(ohm-js@17.1.0)
+      '@tvm/mark':
+        specifier: workspace:*
+        version: link:../mark
       '@types/jest':
         specifier: ^29.5.14
         version: 29.5.14
@@ -93,6 +99,9 @@ importers:
       '@ohm-js/cli':
         specifier: ^2.0.0
         version: 2.0.0(ohm-js@17.1.0)
+      '@tvm/mark':
+        specifier: workspace:*
+        version: link:../mark
       '@types/jest':
         specifier: ^29.5.14
         version: 29.5.14
@@ -115,6 +124,9 @@ importers:
         specifier: 17.1.0
         version: 17.1.0
     devDependencies:
+      '@tvm/mark':
+        specifier: workspace:*
+        version: link:../mark
       '@types/node':
         specifier: ^22.10.5
         version: 22.10.5
@@ -130,10 +142,16 @@ importers:
       '@tvm/lab04':
         specifier: workspace:1.0.0
         version: link:../lab04
+      '@tvm/wasm':
+        specifier: workspace:*
+        version: link:../wasm
       ohm-js:
         specifier: 17.1.0
         version: 17.1.0
     devDependencies:
+      '@tvm/mark':
+        specifier: workspace:*
+        version: link:../mark
       '@types/jest':
         specifier: ^29.5.14
         version: 29.5.14
@@ -148,13 +166,17 @@ importers:
         version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.10.5)(ts-node@10.9.2(@types/node@22.10.5)(typescript@5.7.3)))(typescript@5.7.3)
 
   lab06:
-    devDependencies:
+    dependencies:
       '@tvm/lab04':
         specifier: workspace:1.0.0
         version: link:../lab04
       '@tvm/lab05':
         specifier: workspace:1.0.0
         version: link:../lab05
+    devDependencies:
+      '@tvm/mark':
+        specifier: workspace:*
+        version: link:../mark
       '@types/node':
         specifier: ^22.10.5
         version: 22.10.5
@@ -170,6 +192,10 @@ importers:
       '@tvm/lab04':
         specifier: workspace:1.0.0
         version: link:../lab04
+    devDependencies:
+      '@tvm/mark':
+        specifier: workspace:*
+        version: link:../mark
 
   lab08:
     dependencies:
@@ -183,6 +209,9 @@ importers:
       '@ohm-js/cli':
         specifier: ^2.0.0
         version: 2.0.0(ohm-js@17.1.0)
+      '@tvm/mark':
+        specifier: workspace:*
+        version: link:../mark
       '@types/jest':
         specifier: ^29.5.14
         version: 29.5.14
@@ -201,6 +230,9 @@ importers:
       '@tvm/lab08':
         specifier: workspace:1.0.0
         version: link:../lab08
+      '@tvm/wasm':
+        specifier: workspace:*
+        version: link:../wasm
       ohm-js:
         specifier: 17.1.0
         version: 17.1.0
@@ -229,6 +261,9 @@ importers:
       '@tvm/lab09':
         specifier: workspace:1.0.0
         version: link:../lab09
+      '@tvm/wasm':
+        specifier: workspace:*
+        version: link:../wasm
       ohm-js:
         specifier: 17.1.0
         version: 17.1.0
@@ -236,6 +271,9 @@ importers:
       '@ohm-js/cli':
         specifier: ^2.0.0
         version: 2.0.0(ohm-js@17.1.0)
+      '@tvm/mark':
+        specifier: workspace:*
+        version: link:../mark
       '@types/jest':
         specifier: ^29.5.14
         version: 29.5.14
@@ -260,6 +298,9 @@ importers:
       '@tvm/lab10':
         specifier: workspace:1.0.0
         version: link:../lab10
+      '@tvm/wasm':
+        specifier: workspace:*
+        version: link:../wasm
       ohm-js:
         specifier: 17.1.0
         version: 17.1.0
@@ -270,6 +311,9 @@ importers:
       '@ohm-js/cli':
         specifier: ^2.0.0
         version: 2.0.0(ohm-js@17.1.0)
+      '@tvm/mark':
+        specifier: workspace:*
+        version: link:../mark
       '@types/jest':
         specifier: ^29.5.14
         version: 29.5.14
