@@ -108,6 +108,9 @@ importers:
 
   lab04:
     dependencies:
+      '@tvm/lab03':
+        specifier: workspace:1.0.0
+        version: link:../lab03
       ohm-js:
         specifier: 17.1.0
         version: 17.1.0
@@ -124,6 +127,9 @@ importers:
 
   lab05:
     dependencies:
+      '@tvm/lab04':
+        specifier: workspace:1.0.0
+        version: link:../lab04
       ohm-js:
         specifier: 17.1.0
         version: 17.1.0
@@ -143,6 +149,12 @@ importers:
 
   lab06:
     devDependencies:
+      '@tvm/lab04':
+        specifier: workspace:1.0.0
+        version: link:../lab04
+      '@tvm/lab05':
+        specifier: workspace:1.0.0
+        version: link:../lab05
       '@types/node':
         specifier: ^22.10.5
         version: 22.10.5
@@ -153,10 +165,17 @@ importers:
         specifier: ^29.2.5
         version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.10.5)(ts-node@10.9.2(@types/node@22.10.5)(typescript@5.7.3)))(typescript@5.7.3)
 
-  lab07: {}
+  lab07:
+    dependencies:
+      '@tvm/lab04':
+        specifier: workspace:1.0.0
+        version: link:../lab04
 
   lab08:
     dependencies:
+      '@tvm/lab04':
+        specifier: workspace:1.0.0
+        version: link:../lab04
       ohm-js:
         specifier: 17.1.0
         version: 17.1.0
@@ -179,6 +198,9 @@ importers:
 
   lab09:
     dependencies:
+      '@tvm/lab08':
+        specifier: workspace:1.0.0
+        version: link:../lab08
       ohm-js:
         specifier: 17.1.0
         version: 17.1.0
@@ -201,6 +223,12 @@ importers:
 
   lab10:
     dependencies:
+      '@tvm/lab08':
+        specifier: workspace:1.0.0
+        version: link:../lab08
+      '@tvm/lab09':
+        specifier: workspace:1.0.0
+        version: link:../lab09
       ohm-js:
         specifier: 17.1.0
         version: 17.1.0
@@ -223,6 +251,15 @@ importers:
 
   lab11:
     dependencies:
+      '@tvm/lab04':
+        specifier: workspace:1.0.0
+        version: link:../lab04
+      '@tvm/lab09':
+        specifier: workspace:1.0.0
+        version: link:../lab09
+      '@tvm/lab10':
+        specifier: workspace:1.0.0
+        version: link:../lab10
       ohm-js:
         specifier: 17.1.0
         version: 17.1.0

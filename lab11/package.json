@@ -24,7 +24,10 @@
   },
   "dependencies": {
     "ohm-js": "17.1.0",
-    "z3-solver": "4.13.4"
+    "z3-solver": "4.13.4",
+    "@tvm/lab04": "workspace:1.0.0",
+    "@tvm/lab09": "workspace:1.0.0",
+    "@tvm/lab10": "workspace:1.0.0"
   },
   "jest": {}
 }

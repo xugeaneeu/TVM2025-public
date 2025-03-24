@@ -15,7 +15,6 @@
 		"build": "tsc --build",
 		"clean": "tsc --build --clean",
 		"typecheck": "tsc --build --emitDeclarationOnly",
-		"postinstall": "syncpack fix-mismatches",
 		"test": "jest --detectOpenHandles"
 	},
 	"dependencies": {

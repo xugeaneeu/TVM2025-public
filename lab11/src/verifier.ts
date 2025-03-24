@@ -12,8 +12,12 @@ async function initZ3()
         z3 = Z3C('main');        
     }
 }
+export function flushZ3()
+{
+    (z3 as any) = null;
+}
 
-export let z3: Context;
+let z3: Context;
 
 export async function verifyModule(module: AnnotatedModule)
 {

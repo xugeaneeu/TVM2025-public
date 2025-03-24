@@ -12,6 +12,9 @@
         "build": "tsc --build",
         "test": "pnpm build && pnpm jest . -c ../../jest.config.js"
     },
+    "dependencies": {
+        "@tvm/lab04": "workspace:1.0.0"
+    },
     "keywords": [],
     "author": "",
     "license": "ISC",
