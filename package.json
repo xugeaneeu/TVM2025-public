@@ -15,9 +15,11 @@
 		"build": "tsc --build",
 		"clean": "tsc --build --clean",
 		"typecheck": "tsc --build --emitDeclarationOnly",
-		"postinstall": "syncpack fix-mismatches"
+		"postinstall": "syncpack fix-mismatches",
+		"test": "--detectOpenHandles"
 	},
 	"dependencies": {
 		"@jest/globals": "29.7.0"
-	}
+	},
+	"packageManager": "pnpm@10.4.1+"
 }
