@@ -98,7 +98,7 @@ This approach ensures smart resource allocation - if one doesn't have enough tim
 6. Run tests
    **Note**: don't forget to set the desired mark via the `desiredMark.json`!
    - **VS Code**: switch to the Testing tab, hover the project root, click "Run Tests" icon
-   - **CLI**: run the `jest``command at the project root
+   - **CLI**: run the `jest` command at the project root
 
 [nodejs-dl]: https://nodejs.org/en/download
 [vscode-dl]: https://code.visualstudio.com/Download
