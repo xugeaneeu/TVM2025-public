@@ -92,7 +92,8 @@ This approach ensures smart resource allocation - if one doesn't have enough tim
 5. Build the labs
    - **VS Code**: press Shift-Ctrl-B.
 
-   - **CLI**: run terminal at the root folder of any lab; execute `pnpm build`.
+   - **CLI**: run terminal at the root folder of any lab; execute `pnpm build`
+
      Running `pnpm -r build` will build all labs at once.
 6. Run tests
    **Note**: don't forget to set the desired mark via the `desiredMark.json`!
