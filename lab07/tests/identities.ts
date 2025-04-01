@@ -9,8 +9,7 @@ export const basicIdentities = () => parseIdentities([
     ["x*1", "x"],
     ["x+x", "2*x"], // ?
     ["x/1", "x"],
-    ["x--y", "x+y"],
-    ["--x", "x"]
+    ["x--y", "x+y"]
 ]);
 
 export const commutativeIdentities = () => [
@@ -19,6 +18,7 @@ export const commutativeIdentities = () => [
         ["x+y", "y+x"],
         ["x*y", "y*x"],
         ["x-y", "x+-y"],
+        ["--x", "x"]
     ])];
 
 export const toughIdentities = () => [
