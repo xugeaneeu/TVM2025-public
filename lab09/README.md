@@ -28,6 +28,7 @@ The code itself is going to be relatively straightforward. Note the following:
   - Implement support for the single-returning functions
   - Implement support for the assignment statements
   - Implement support for the block statements
+  - Properly handle the comments
 - B | 4 | Hurt Me Plenty:
   - Implement support for the functions with multiple return values
   - Implement support for multi-function modules
