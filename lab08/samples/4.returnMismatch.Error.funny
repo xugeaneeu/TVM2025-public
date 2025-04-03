@@ -1,4 +1,4 @@
-foo1() returns x: int
+foo1() returns x: int, y: int
 {
     x = 42;
 }
@@ -12,6 +12,6 @@ bar(a: int)
     returns c: int 
     uses e: int
 {
-    e = foo3(foo1());
+    e = foo2(foo1());
     c = a * e;
 }
