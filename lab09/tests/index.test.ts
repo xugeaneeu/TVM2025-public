@@ -3,7 +3,7 @@ import { join as pathJoin } from 'path';
 import { test } from "../../mark";
 import { parseAndCompile } from "../src";
 
-import { sampleDir } from '../../lab08/tests/index.test';
+const sampleDir = "./lab08/samples";
 
 
 async function testOneResult<T = number>(fileName: string, funcName: string, ...args: number[]): Promise<T>
