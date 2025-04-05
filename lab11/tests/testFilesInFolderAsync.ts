@@ -29,7 +29,7 @@ export function testFilesInFolderAsync(folder: string, parseFunc: (source: strin
                         expect.objectContaining({ startLine, startCol, endLine, endCol })));
                 }
                 else // no error specified in the file name
-                    test(name, async () => expect(async () => await parseFunc(sample)).resolves.not.toThrow());
+                    test(name, async () => expect(async () => await parseFunc(sample)).not.toThrow());
             }
         }
     }
