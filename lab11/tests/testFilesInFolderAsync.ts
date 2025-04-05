@@ -1,5 +1,5 @@
 import { desiredMark } from '../../desiredMark.json';
-import { testRe, parseInt } from '../../lab08/tests/testFilesInFolder';
+import { addIntGroup, testRe } from '../../lab08/tests/testFilesInFolder';
 import { DesiredMark } from '../../mark';
 import { 
     readFileSync, 
@@ -21,12 +21,13 @@ export function testFilesInFolderAsync(folder: string, parseFunc: (source: strin
                     test.skip(name, () => { });
 
                 else if (m.groups.error) {
-                    const startLine = parseInt(m.groups.startLine);
-                    const startCol = parseInt(m.groups.startCol);
-                    const endLine = parseInt(m.groups.endLine);
-                    const endCol = parseInt(m.groups.endCol);
+                    var e = {};
+                    addIntGroup(e, m.groups, 'startLine');
+                    addIntGroup(e, m.groups, 'startCol');
+                    addIntGroup(e, m.groups, 'endLine');
+                    addIntGroup(e, m.groups, 'endCol');
                     test(name, () => expect(async () => (await parseFunc(sample))).rejects.toThrow(
-                        expect.objectContaining({ startLine, startCol, endLine, endCol })));
+                        expect.objectContaining(e)));
                 }
                 else // no error specified in the file name
                     test(name, async () => expect(async () => await parseFunc(sample)).not.toThrow());
