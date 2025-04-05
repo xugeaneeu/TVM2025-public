@@ -27,18 +27,3 @@ export async function verifyModule(module: AnnotatedModule)
     throw "Not implemented"
 
 }
-
-function convertConditionsToZ3(p: Predicate): Bool
-{
-    throw "Not implemented";
-}
-async function proveTheorem(b: Bool): Promise<"ok" | Model>
-{
-    throw "Not implemented"
-} 
-
-
-interface Predicate
-{
-    // todo: add features 
-}
