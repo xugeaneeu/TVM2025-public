@@ -1,16 +1,12 @@
 import { desiredMark } from '../../desiredMark.json';
+import { testRe } from '../../lab08/tests/testFilesInFolder';
 import { DesiredMark } from '../../mark';
 import { 
     readFileSync, 
     readdirSync  } from 'fs';
 import { join as pathJoin, parse as pathParse} from 'path';
-export const sampleDir = "./lab08/samples";
 
-export const testRe = /^(?<mark>[^\.]+)\.(?<name>.*?)($|(?<error>\.Error\.(?<startLine>\d+)?(\.(?<startCol>\d+)((-(?<endLine>\d+)\.)?(?<endCol>\d+))?)?))/;
-const parseInt = (s: string) => s ? Number.parseInt(s) : undefined;
-
-
-export function testFilesInFolder(folder: string, parseFunc: (source: string)=>any) {
+export function testFilesInFolderAsync(folder: string, parseFunc: (source: string)=>Promise<any>) {
     let files = readdirSync(folder, { withFileTypes: true, recursive: true });
     for (const file of files) {
         const filePathString = pathJoin(file.parentPath, file.name);
@@ -29,11 +25,11 @@ export function testFilesInFolder(folder: string, parseFunc: (source: string)=>a
                     const startCol = parseInt(m.groups.startCol);
                     const endLine = parseInt(m.groups.endLine);
                     const endCol = parseInt(m.groups.endCol);
-                    test(name, () => expect(() => parseFunc(sample)).toThrow(
+                    test(name, () => expect(async () => await parseFunc(sample)).toThrow(
                         expect.objectContaining({ startLine, startCol, endLine, endCol })));
                 }
                 else // no error specified in the file name
-                    test(name, () => expect(() => parseFunc(sample)).not.toThrow());
+                    test(name, () => expect(async () => await parseFunc(sample)).not.toThrow());
             }
         }
     }
