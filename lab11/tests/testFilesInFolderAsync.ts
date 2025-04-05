@@ -25,11 +25,11 @@ export function testFilesInFolderAsync(folder: string, parseFunc: (source: strin
                     const startCol = parseInt(m.groups.startCol);
                     const endLine = parseInt(m.groups.endLine);
                     const endCol = parseInt(m.groups.endCol);
-                    test(name, () => expect(async () => await parseFunc(sample)).toThrow(
+                    test(name, () => expect(async () => (await parseFunc(sample))).rejects.toThrow(
                         expect.objectContaining({ startLine, startCol, endLine, endCol })));
                 }
                 else // no error specified in the file name
-                    test(name, () => expect(async () => await parseFunc(sample)).not.toThrow());
+                    test(name, async () => expect(async () => await parseFunc(sample)).resolves.not.toThrow());
             }
         }
     }
