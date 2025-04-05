@@ -1,5 +1,5 @@
 import { desiredMark } from '../../desiredMark.json';
-import { testRe } from '../../lab08/tests/testFilesInFolder';
+import { testRe, parseInt } from '../../lab08/tests/testFilesInFolder';
 import { DesiredMark } from '../../mark';
 import { 
     readFileSync, 

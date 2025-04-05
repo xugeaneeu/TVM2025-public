@@ -7,7 +7,7 @@ import { join as pathJoin, parse as pathParse} from 'path';
 export const sampleDir = "./lab08/samples";
 
 export const testRe = /^(?<mark>[^\.]+)\.(?<name>.*?)($|(?<error>\.Error\.(?<startLine>\d+)?(\.(?<startCol>\d+)((-(?<endLine>\d+)\.)?(?<endCol>\d+))?)?))/;
-const parseInt = (s: string) => s ? Number.parseInt(s) : undefined;
+export const parseInt = (s: string) => s ? Number.parseInt(s) : undefined;
 
 
 export function testFilesInFolder(folder: string, parseFunc: (source: string)=>any) {
