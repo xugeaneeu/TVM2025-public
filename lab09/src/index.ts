@@ -1,7 +1,6 @@
 import { parseFunny} from "../../lab08";
 
 import { compileModule as compileModule } from "./compiler";
-import { resolveModule } from "./resolver";
 
 export class ExportWrapper implements Record<string, Function>
 {
@@ -31,11 +30,10 @@ export class ExportWrapper implements Record<string, Function>
     [x: string]: Function;
 }
 
-export async function parseAndCompile(source: string): Promise<Record<string, Function>>
+export async function parseAndCompile(name: string, source: string): Promise<Record<string, Function>>
 {
     const ast = parseFunny(source);
-    const res = resolveModule(ast);
-    const mod = await compileModule(res);
+    const mod = await compileModule(ast, name);
     return new ExportWrapper(mod);
 }
 

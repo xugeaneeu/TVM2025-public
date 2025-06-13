@@ -1,6 +1,6 @@
 import { Arith, ArithSort, Bool, Context, init, Model, SMTArray, SMTArraySort } from "z3-solver";
 
-import { printZ3Model } from "./printZ3Model";
+import { printFuncCall } from "./printFuncCall";
 import { AnnotatedModule } from "../../lab10";
 
 
