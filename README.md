@@ -44,17 +44,17 @@ Some of the labs can be done out-of-order, but many do depend on each other. Her
 
 ```mermaid
 flowchart LR
-    Lab01[<a href="./lab01/README.md">Lab01</a>]
-    Lab02[<a href="./lab02/README.md">Lab02</a>]
-    Lab03[<a href="./lab03/README.md">Lab03</a>]
-    Lab04[<a href="./lab04/README.md">Lab04</a>]
-    Lab05[<a href="./lab05/README.md">Lab05</a>]
-    Lab06[<a href="./lab06/README.md">Lab06</a>]
-    Lab07[<a href="./lab07/README.md">Lab07</a>]
-    Lab08[<a href="./lab08/README.md">Lab08</a>]
-    Lab09[<a href="./lab09/README.md">Lab09</a>]
-    Lab10[<a href="./lab10/README.md">Lab10</a>]
-    Lab11[<a href="./lab11/README.md">Lab11</a>]
+    Lab01[<a href="lab01/README.md">Lab01</a>]
+    Lab02[<a href="lab02/README.md">Lab02</a>]
+    Lab03[<a href="lab03/README.md">Lab03</a>]
+    Lab04[<a href="lab04/README.md">Lab04</a>]
+    Lab05[<a href="lab05/README.md">Lab05</a>]
+    Lab06[<a href="lab06/README.md">Lab06</a>]
+    Lab07[<a href="lab07/README.md">Lab07</a>]
+    Lab08[<a href="lab08/README.md">Lab08</a>]
+    Lab09[<a href="lab09/README.md">Lab09</a>]
+    Lab10[<a href="lab10/README.md">Lab10</a>]
+    Lab11[<a href="lab11/README.md">Lab11</a>]
 
     
     Lab03 --> Lab04
