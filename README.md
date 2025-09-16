@@ -92,8 +92,7 @@ This approach ensures smart resource allocation - if one doesn't have enough tim
 
      1. Make sure the dependencies are installed by running `pnpm -r install` at the project root (only once)
      2. Run terminal at the root folder of any lab; execute `pnpm build`
-
-     Running `pnpm -r build` will build all labs at once.
+     3. Running `pnpm -r build` at the workspace root will build all labs at once.
 
 5. Run tests
    **Note**: don't forget to set the desired mark via the `desiredMark.json`!
