@@ -4,18 +4,23 @@ import grammar from "./addmul.ohm-bundle";
 
 export function evaluate(content: string): number
 {
-    return calculate(parse(content));
+  return calculate(parse(content));
 }
+
 export class SyntaxError extends Error
 {
 }
 
 function parse(content: string): MatchResult
 {
-    throw "Not implemented";
+  const match = grammar.match(content);
+  if (match.failed()) {
+    throw new SyntaxError(match.message);
+  }
+  return match;
 }
 
 function calculate(expression: MatchResult):number
 {
-    throw "Not implemented"
+  return addMulSemantics(expression).calculate();
 }
