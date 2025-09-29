@@ -4,13 +4,13 @@ import { rpnStackDepth, StackDepth } from "./stackDepth";
 import { rpnCalc } from "./calculate";
 
 interface RpnDict  extends Dict {
-    calculate(): number;
-    stackDepth: StackDepth;
+  calculate(): number;
+  stackDepth: StackDepth;
 }
 
 interface RpnSemantics extends Semantics
 {
-    (match: MatchResult): RpnDict;
+  (match: MatchResult): RpnDict;
 }
 
 export const rpnSemantics: RpnSemantics = grammar.createSemantics() as RpnSemantics;
