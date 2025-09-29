@@ -31,7 +31,7 @@ digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 ```
 
 Note that this grammar requires additional disambiguation beyond operation priorities: the subtraction and division are *left-associative*.
-`x + (y - z)` does not equal `(x + y) - z`. If there are no parentheses, our usual evaluation order rules require to perform the "left" operation before the "right" one.
+`x - (y - z)` does not equal `(x - y) - z`. If there are no parentheses, our usual evaluation order rules require to perform the "left" operation before the "right" one.
 
 ## Tasks
 
