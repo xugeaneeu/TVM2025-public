@@ -23,9 +23,8 @@ function derive_node(node: Expr, varName: string): Expr
       const right_d = derive_node(node.right, varName); 
       switch (node.op) {
         case "+":
-          return {type: 'bin', op: '+', left: left_d, right: right_d};
         case "-":
-          return {type: 'bin', op: '-', left: left_d, right: right_d};
+          return {type: 'bin', op: node.op, left: left_d, right: right_d};
         case "*":
           return {type: 'bin', op: '+', left: {type: 'bin', op: '*', left: left_d, right: node.right}
                                       , right: {type: 'bin', op: '*', left: node.left, right: right_d}};
