@@ -3,7 +3,7 @@ import { Expr } from "../../lab04";
 import { buildOneFunctionModule, Fn } from "./emitHelper";
 const { i32, get_local} = C;
     
-export function traverse(node: Expr, vi: Set<String>, vars: string[]) {
+function traverse(node: Expr, vi: Set<String>, vars: string[]) {
   switch (node.type) {
     case "num":return;
     case "var":
