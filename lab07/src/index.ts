@@ -4,5 +4,3 @@ import { simplify } from "./simplify";
 
 export * from "./cost";
 export * from "./simplify";
-
-
