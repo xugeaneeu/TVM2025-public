@@ -1,140 +1,136 @@
 import { Expr } from "../../lab04";
 import { cost } from "./cost";
 
-export function simplify(e: Expr, identities: [Expr, Expr][]): Expr {
-  let prev: Expr;
-  let curr = e;
+type Op = '+' | '-' | '*' | '/';
+const neg = (e: Expr): Expr => ({ type: 'neg', arg: e });
+const bin = (op: Op, l: Expr, r: Expr): Expr => ({ type: 'bin', op, left: l, right: r });
 
-  do {
-    prev = curr;
-    curr = applyOnce(curr, identities);
-  } while (!equals(prev, curr));
-
-  return curr;
+function encode(e: Expr): string {
+  switch (e.type) {
+    case "num": return `#${e.value}`;
+    case "var": return `$${e.name}`;
+    case "neg": return `~(${encode(e.arg)})`;
+    case "bin": return `(${encode(e.left)}${e.op}${encode(e.right)})`;
+  }
 }
 
-function applyOnce(e: Expr, identities: [Expr, Expr][]): Expr {
-  for (const [lhs, rhs] of identities) {
-    const map1: Record<string, Expr> = {};
-    if (unify(lhs, e, map1)) {
-      const replaced = substitute(rhs, map1);
-      if (cost(replaced) < cost(e)) {
-        return replaced;
+type Env = Record<string, Expr>;
+
+function match(pattern: Expr, expr: Expr, env: Env = {}): Env | null {
+  switch (pattern.type) {
+    case "num":
+      return (expr.type === "num" && expr.value === pattern.value) ? env : null;
+
+    case "var":
+      const name = pattern.name;
+      const bound = env[name];
+      if (bound) {
+        return equals(bound, expr) ? env : null;
       }
-    }
+      return { ...env, [name]: expr };
 
-    const map2: Record<string, Expr> = {};
-    if (unify(rhs, e, map2)) {
-      const replaced = substitute(lhs, map2);
-      if (cost(replaced) < cost(e)) {
-        return replaced;
-      }
-    }
+    case "neg":
+      return expr.type === "neg" ? match(pattern.arg, expr.arg, env) : null;
+
+    case "bin":
+      if (expr.type !== "bin" || expr.op !== pattern.op) return null;
+      const envL = match(pattern.left, expr.left, env);
+      return envL ? match(pattern.right, expr.right, envL) : null;
   }
-
-  if (e.type === "neg") {
-    const newArg = applyOnce(e.arg, identities);
-    if (newArg !== e.arg) {
-      return { type: "neg", arg: newArg };
-    }
-    return e;
-  }
-
-  if (e.type === "bin") {
-    const newLeft = applyOnce(e.left, identities);
-    if (newLeft !== e.left) {
-      return { type: "bin", op: e.op, left: newLeft, right: e.right };
-    }
-    const newRight = applyOnce(e.right, identities);
-    if (newRight !== e.right) {
-      return { type: "bin", op: e.op, left: e.left, right: newRight };
-    }
-    return e;
-  }
-
-  return e;
 }
 
-function unify(pattern: Expr, expr: Expr, map: Record<string, Expr>): boolean {
-  if (pattern.type === "num") {
-    return expr.type === "num" && expr.value === pattern.value;
+function substitute(template: Expr, env: Env): Expr {
+  switch (template.type) {
+    case "num": return template;
+    case "var": return env[template.name] || template
+    case "neg": return neg(substitute(template.arg, env));
+    case "bin": return bin(template.op as Op, substitute(template.left, env), substitute(template.right, env));
   }
-  if (pattern.type === "var") {
-    const v = pattern.name;
-    if (map.hasOwnProperty(v)) {
-      return equals(map[v], expr);
-    } else {
-      map[v] = expr;
-      return true;
-    }
-  }
-  if (pattern.type === "neg") {
-    if (expr.type !== "neg") return false;
-    return unify(pattern.arg, expr.arg, map);
-  }
-  if (expr.type !== "bin" || pattern.op !== expr.op) return false;
+}
+
+type Rebuilder = (replacement: Expr) => Expr;
+function* tree(e: Expr): Generator<[Expr, Rebuilder]> {
+  yield [e, (r: Expr) => r];
   
-  if (pattern.op === "+" || pattern.op === "*") {
-    const m1 = { ...map };
-    if (
-      unify(pattern.left, expr.left, m1) &&
-      unify(pattern.right, expr.right, m1)
-    ) {
-      Object.assign(map, m1);
-      return true;
-    }
-    const m2 = { ...map };
-    if (
-      unify(pattern.left, expr.right, m2) &&
-      unify(pattern.right, expr.left, m2)
-    ) {
-      Object.assign(map, m2);
-      return true;
-    }
-    return false;
-  }
+  switch (e.type) {
+    case "num":
+    case "var":
+      return;
 
-  return (
-    unify(pattern.left, expr.left, map) &&
-    unify(pattern.right, expr.right, map)
-  );
+    case "neg":
+      for (const [sub, rebuild] of tree(e.arg)) {
+        yield [sub, (r: Expr) => rebuild(neg(r))];
+      }
+      return;
+
+    case "bin":
+      for (const [subL, rebuildL] of tree(e.left)) {
+        yield [subL, (r: Expr) => rebuildL(bin(e.op as Op, r, e.right))];
+      }
+      for (const [subR, rebuildR] of tree(e.right)) {
+        yield [subR, (r: Expr) => rebuildR(bin(e.op as Op, e.left, r))];
+      }
+      return;
+  }
 }
 
-function substitute(pattern: Expr, map: Record<string, Expr>): Expr {
-  if (pattern.type === "num") {
-    return { type: "num", value: pattern.value };
+
+export function simplify(e: Expr, identities: [Expr, Expr][]): Expr {
+  const seen = new Set<string>();
+  const q: Expr[] = [e];
+  let best: Expr = e;
+  let bestCost = cost(e);
+
+  let steps = 0;
+  let limit = 1000;
+
+  while (q.length && steps < limit) {
+    steps++;
+
+    const cur = q.shift()!;
+    const key = encode(cur);
+    if (seen.has(key)) continue;
+    seen.add(key);
+
+    const c = cost(cur);
+    if (c < bestCost) {
+      best = cur;
+      bestCost = c;
+    }
+
+    for (const [lhs, rhs] of identities) {
+      for (const [sub, rebuild] of tree(cur)) {
+        const env = match(lhs, sub);
+        if (env) {
+          const transformed = substitute(rhs, env);
+          const res = rebuild(transformed);
+          const resKey = encode(res);
+
+          if (!seen.has(resKey)) {
+            const resCost = cost(res);
+            if (resCost < c + 3) {
+              q.push(res);
+            } 
+          }
+        }
+      }
+    }
   }
-  if (pattern.type === "var") {
-    const v = pattern.name;
-    return map.hasOwnProperty(v) ? map[v] : { type: "var", name: v };
-  }
-  if (pattern.type === "neg") {
-    return { type: "neg", arg: substitute(pattern.arg, map) };
-  }
-  return {
-    type: "bin",
-    op: pattern.op,
-    left: substitute(pattern.left, map),
-    right: substitute(pattern.right, map),
-  };
+
+  return best;
 }
 
 function equals(a: Expr, b: Expr): boolean {
   if (a === b) return true;
   if (a.type !== b.type) return false;
   switch (a.type) {
-    case "num":
-      return b.type === "num" && a.value === b.value;
-    case "var":
-      return b.type === "var" && a.name === b.name;
-    case "neg":
-      return b.type === "neg" && equals(a.arg, b.arg);
+    case "num": return b.type === "num" && a.value === b.value;
+    case "var": return b.type === "var" && a.name === b.name;
+    case "neg": return b.type === "neg" && equals(a.arg, b.arg);
     case "bin":
-      return (
-        b.type === "bin" &&
-        a.op === b.op &&
-        equals(a.left, b.left) &&
-        equals(a.right, b.right)
-      );
+      return b.type === "bin" && 
+             a.op === b.op && 
+             equals(a.left, b.left) && 
+             equals(a.right, b.right);
   }
 }
