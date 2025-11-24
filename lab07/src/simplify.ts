@@ -16,35 +16,35 @@ function encode(e: Expr): string {
 
 type Env = Record<string, Expr>;
 
-function match(pattern: Expr, expr: Expr, env: Env = {}): Env | null {
+function match(pattern: Expr, expr: Expr, varMap: Env = {}): Env | null {
   switch (pattern.type) {
     case "num":
-      return (expr.type === "num" && expr.value === pattern.value) ? env : null;
+      return (expr.type === "num" && expr.value === pattern.value) ? varMap : null;
 
     case "var":
       const name = pattern.name;
-      const bound = env[name];
+      const bound = varMap[name];
       if (bound) {
-        return equals(bound, expr) ? env : null;
+        return equals(bound, expr) ? varMap : null;
       }
-      return { ...env, [name]: expr };
+      return { ...varMap, [name]: expr };
 
     case "neg":
-      return expr.type === "neg" ? match(pattern.arg, expr.arg, env) : null;
+      return expr.type === "neg" ? match(pattern.arg, expr.arg, varMap) : null;
 
     case "bin":
       if (expr.type !== "bin" || expr.op !== pattern.op) return null;
-      const envL = match(pattern.left, expr.left, env);
+      const envL = match(pattern.left, expr.left, varMap);
       return envL ? match(pattern.right, expr.right, envL) : null;
   }
 }
 
-function substitute(template: Expr, env: Env): Expr {
+function substitute(template: Expr, varMap: Env): Expr {
   switch (template.type) {
     case "num": return template;
-    case "var": return env[template.name] || template
-    case "neg": return neg(substitute(template.arg, env));
-    case "bin": return bin(template.op as Op, substitute(template.left, env), substitute(template.right, env));
+    case "var": return varMap[template.name] || template
+    case "neg": return neg(substitute(template.arg, varMap));
+    case "bin": return bin(template.op as Op, substitute(template.left, varMap), substitute(template.right, varMap));
   }
 }
 
