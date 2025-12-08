@@ -2,10 +2,8 @@ import { writeFileSync } from "fs";
 import { Op, I32, Void, c, BufferedEmitter, LocalEntry, FuncType, VarUint32, ExportEntry, FunctionBody} from "../../wasm";
 import { Condition, Expr, LValue, Module, Statement } from "../../lab08";
 
-const { i32, 
-  varuint32,
-  get_local, local_entry, set_local, call, if_, void_block, void_loop, br_if, str_ascii, export_entry,
-  func_type_m, function_body, type_section, function_section, export_section, code_section, drop} = c;
+const { i32, varuint32, get_local, local_entry, set_local, call, if_, void_block, void_loop, br_if, str_ascii, export_entry,
+        func_type_m, function_body, type_section, function_section, export_section, code_section, drop} = c;
 
 function loadI32(addr: Op<I32>): Op<I32> {
   return c.i32.load(c.align32, addr);
@@ -265,19 +263,22 @@ function compileCondition(cond: Condition, ctx: CompileContext): Op<I32> {
     }
     case "not":   return i32.eqz(compileCondition(cond.condition, ctx));
     case "and":
-      return if_(i32,
+      return if_(
+        i32,
         compileCondition(cond.left, ctx),
         [ compileCondition(cond.right, ctx) ],
         [ i32.const(0) ]
       );
     case "or":
-      return if_(i32,
+      return if_(
+        i32,
         compileCondition(cond.left, ctx),
         [ i32.const(1) ],
         [ compileCondition(cond.right, ctx) ]
       );
     case "implies":
-      return if_(i32,
+      return if_(
+        i32,
         compileCondition(cond.left, ctx),
         [ compileCondition(cond.right, ctx) ],
         [ i32.const(1) ]
