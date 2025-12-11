@@ -1,4 +1,4 @@
 
 Funnier <: Funny {
-    // write rules here
+  // write rules here
 }

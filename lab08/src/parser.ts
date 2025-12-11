@@ -355,7 +355,7 @@ export const getFunnyAst = {
     } as ast.Module;
   },
 
-  Function(name, _lp, params, _rp, _preOpt, retSpec, _postOpt, usesOpt, stmt) {
+  Function(name, _lp, params, _rp, retSpec, usesOpt, stmt) {
     return {
       type: "fun",
       name: name.sourceString,

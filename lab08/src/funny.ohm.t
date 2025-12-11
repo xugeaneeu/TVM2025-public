@@ -4,13 +4,7 @@ Funny <: Arithmetic {
     = Function+
 
   Function
-    = var "(" ParamList ")" PreSpec? RetSpec PostSpec? UsesSpec? Statement
-
-  PreSpec
-    = "requires" Predicate
-  
-  PostSpec 
-    = "ensures" Predicate
+    = var "(" ParamList ")" RetSpec UsesSpec? Statement
 
   RetSpec
     = "returns" ParamListNonEmpty -- list
