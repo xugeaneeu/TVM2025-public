@@ -658,14 +658,11 @@ export function parseFunny(source: string): ast.Module {
   const match: MatchResult = grammar.Funny.match(source, "Module");
 
   if (match.failed()) {
-    const m: any = match;
-    const pos =
-      typeof m.getRightmostFailurePosition == "function"
-        ? m.getRightmostFailurePosition()
-        : null;
+    const a = match.getInterval().getLineAndColumn();
+    const pos = {lineNum: a.lineNum, colNum: a.colNum};
 
     const message: string =
-      m.message ?? "Syntax error in Funny module.";
+      match.message ?? "Syntax error in Funny module.";
 
     fail(ErrorCode.ParseError, message, {
       startLine: pos?.lineNum,

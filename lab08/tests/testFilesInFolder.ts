@@ -29,7 +29,7 @@ export function testFilesInFolder(folder: string, parseFunc: (source: string)=>a
                     test.skip(name, () => { });
 
                 else if (m.groups.error) {
-                    var e = {};
+                    let e = {};
                     addIntGroup(e, m.groups, 'startLine');
                     addIntGroup(e, m.groups, 'startCol');
                     addIntGroup(e, m.groups, 'endLine');

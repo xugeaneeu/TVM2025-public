@@ -26,6 +26,7 @@ export const enum ErrorCode {
   AccessUndeclaredArray = 'ACCESS_UNDECLARED_ARRAY',
   ArrayIndexMultiValue = 'ARRAY_INDEX_MULTI_VALUE',
   ComparisonMultiValue = 'COMPARISON_MULTI_VALUE',
+  VerificationError = 'E_VERIFICATION_ERROR',
 }
 
 export * from './parser';
