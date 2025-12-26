@@ -738,6 +738,8 @@ class FunctionVerifier {
             getSourceLocation(guardedVC) ??
             getSourceLocation(verificationCondition);
 
+        console.log(pos)
+
         fail(
             ErrorCode.VerificationError,
             `Verification failed for function "${funcDef.name}".\n${msg}`,
