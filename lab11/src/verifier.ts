@@ -31,16 +31,16 @@ export function flushZ3() {
     z3 = undefined as any;
 }
 
-type AssignExpr = Extract<Statement, { type: "assign" }>;
-type FuncCallExpr = Extract<Expr, { type: "funccall" }>;
+type AssignmentStatement = Extract<Statement, { type: "assign" }>;
+type FunctionCallExpression = Extract<Expr, { type: "funccall" }>;
 
 type DefinitionalSpec = {
     params: string[];
     resultExpr: Expr;
 };
 
-const TRUE_PRED: Predicate = { kind: "true" };
-const FALSE_PRED: Predicate = { kind: "false" };
+const TRUE_PREDICATE: Predicate = { kind: "true" };
+const FALSE_PREDICATE: Predicate = { kind: "false" };
 
 type SourceRange = {
     startLine?: number;
@@ -49,166 +49,169 @@ type SourceRange = {
     endCol?: number;
 };
 
-function getPos(x: any): SourceRange | undefined {
-    return x?.blame ?? x?.loc;
+function getSourceLocation(node: any): SourceRange | undefined {
+    return node?.blame ?? node?.loc;
 }
 
-function copyMeta(to: any, from: any) {
-    if (!to || !from) return;
-    if (from.loc && !to.loc) to.loc = from.loc;
-    if (from.blame && !to.blame) to.blame = from.blame;
+function copyMetadata(target: any, source: any) {
+    if (!target || !source) return;
+    if (source.loc && !target.loc) target.loc = source.loc;
+    if (source.blame && !target.blame) target.blame = source.blame;
 }
 
-function setBlame<T extends object>(obj: T, pos?: SourceRange): T {
+function attachBlame<T extends object>(obj: T, pos?: SourceRange): T {
     if (pos) (obj as any).blame = pos;
     return obj;
 }
 
 class FunctionVerifier {
-    private readonly ctx: Context;
+    private readonly z3Context: Context;
     private readonly module: AnnotatedModule;
-    private readonly funMap: Map<string, AnnotatedFunctionDef>;
-    private readonly defSpecs: Map<string, DefinitionalSpec>;
+    private readonly functionDefinitionMap: Map<string, AnnotatedFunctionDef>;
+    private readonly definitionalSpecs: Map<string, DefinitionalSpec>;
 
-    private funcDecl = new Map<string, any>();
+    private z3FunctionCache = new Map<string, any>();
 
     constructor(ctx: Context, module: AnnotatedModule) {
-        this.ctx = ctx;
+        this.z3Context = ctx;
         this.module = module;
-        this.funMap = new Map(module.functions.map(f => [f.name, f]));
-        this.defSpecs = this.buildDefSpecs();
+        this.functionDefinitionMap = new Map(module.functions.map(f => [f.name, f]));
+        this.definitionalSpecs = this.buildDefinitionalSpecs();
     }
 
     async verify(): Promise<void> {
-        for (const f of this.module.functions) {
-            await this.verifyFunction(f);
+        for (const funcDef of this.module.functions) {
+            await this.verifyFunction(funcDef);
         }
     }
 
-    private buildDefSpecs(): Map<string, DefinitionalSpec> {
+    private buildDefinitionalSpecs(): Map<string, DefinitionalSpec> {
         return new Map(
-            this.module.functions.flatMap(f => {
-                if (f.returns.length !== 1 || !f.post) return [];
-                const def = this.extractDefinitionalSpec(f.returns[0], f.post, f.parameters);
-                return def ? [[f.name, def] as const] : [];
+            this.module.functions.flatMap(funcDef => {
+                if (funcDef.returns.length !== 1 || !funcDef.post) return [];
+                const spec = this.extractDefinitionalSpec(funcDef.returns[0], funcDef.post, funcDef.parameters);
+                return spec ? [[funcDef.name, spec] as const] : [];
             })
         );
     }
 
-    private extractDefinitionalSpec(ret: ParameterDef, post: Predicate, params: ParameterDef[]) {
-        let core = post;
-        while (core.kind === "paren") core = core.inner;
-        if (core.kind !== "comparison" || core.op !== "==") return;
+    private extractDefinitionalSpec(retParam: ParameterDef, postCondition: Predicate, params: ParameterDef[]) {
+        let currentPredicate = postCondition;
+        while (currentPredicate.kind === "paren") currentPredicate = currentPredicate.inner;
+        
+        if (currentPredicate.kind !== "comparison" || currentPredicate.op !== "==") return;
 
-        const isRet = (e: Expr) => e.type === "var" && e.name === ret.name;
-        const paramsNames = params.map(p => p.name);
+        const isReturnVar = (e: Expr) => e.type === "var" && e.name === retParam.name;
+        const paramNames = params.map(p => p.name);
 
-        if (isRet(core.left)) return { params: paramsNames, resultExpr: core.right };
-        if (isRet(core.right)) return { params: paramsNames, resultExpr: core.left };
+        if (isReturnVar(currentPredicate.left)) return { params: paramNames, resultExpr: currentPredicate.right };
+        if (isReturnVar(currentPredicate.right)) return { params: paramNames, resultExpr: currentPredicate.left };
     }
 
-    private async verifyFunction(f: AnnotatedFunctionDef): Promise<void> {
-        const post = f.post ?? TRUE_PRED;
-        const pre = f.pre ?? TRUE_PRED;
+    private async verifyFunction(funcDef: AnnotatedFunctionDef): Promise<void> {
+        const postCondition = funcDef.post ?? TRUE_PREDICATE;
+        const preCondition = funcDef.pre ?? TRUE_PREDICATE;
 
-        const postPos = getPos(post);
+        const postLocation = getSourceLocation(postCondition);
 
-        const { pre: wpPre, vcs } = this.wpStatement(f, f.body, post);
+        const { pre: calculatedPre, vcs: verificationConditions } = this.computeWeakestPrecondition(funcDef, funcDef.body, postCondition);
 
-        for (const vc of [wpPre, ...vcs]) {
-            const goal = this.makeImplies(pre, vc);
-            setBlame(goal, getPos(vc) ?? postPos);
-            await this.prove(goal, f);
+        const allConditions = [calculatedPre, ...verificationConditions];
+
+        for (const condition of allConditions) {
+            const goal = this.createImplication(preCondition, condition);
+            attachBlame(goal, getSourceLocation(condition) ?? postLocation);
+            await this.proveGoal(goal, funcDef);
         }
     }
 
-    private getFunc(name: string, arity: number, ret: "int" | "bool") {
-        const key = `${name}/${arity}/${ret}`;
-        return (this.funcDecl.get(key) ?? this.funcDecl.set(key,
-            this.ctx.Function.declare(
-                name,
-                ...Array.from({ length: arity }, () => this.ctx.Int.sort()),
-                ret === "int" ? this.ctx.Int.sort() : this.ctx.Bool.sort()
-            )
-        ).get(key));
+    private getZ3FunctionDeclaration(name: string, arity: number, returnType: "int" | "bool") {
+        const cacheKey = `${name}/${arity}/${returnType}`;
+        if (!this.z3FunctionCache.has(cacheKey)) {
+            const domainSorts = Array.from({ length: arity }, () => this.z3Context.Int.sort());
+            const rangeSort = returnType === "int" ? this.z3Context.Int.sort() : this.z3Context.Bool.sort();
+            const decl = this.z3Context.Function.declare(name, ...domainSorts, rangeSort);
+            this.z3FunctionCache.set(cacheKey, decl);
+        }
+        return this.z3FunctionCache.get(cacheKey);
     }
 
-    private forEachCallInExpr(e: Expr, cb: (c: FuncCallExpr) => void): void {
-        if (e.type === "funccall") cb(e);
+    private forEachCallInExpression(expr: Expr, visitor: (call: FunctionCallExpression) => void): void {
+        if (expr.type === "funccall") visitor(expr);
 
-        const kids: Expr[] =
-            e.type === "funccall" ? e.args :
-                e.type === "bin" ? [e.left, e.right] :
-                    e.type === "neg" ? [e.arg] :
-                        e.type === "arraccess" ? [e.index] :
+        const children: Expr[] =
+            expr.type === "funccall" ? expr.args :
+                expr.type === "bin" ? [expr.left, expr.right] :
+                    expr.type === "neg" ? [expr.arg] :
+                        expr.type === "arraccess" ? [expr.index] :
                             [];
 
-        kids.forEach(k => this.forEachCallInExpr(k, cb));
+        children.forEach(child => this.forEachCallInExpression(child, visitor));
     }
 
-    private forEachCallInPred(p: Predicate, cb: (c: FuncCallExpr) => void): void {
-        if (p.kind === "comparison") {
-            this.forEachCallInExpr(p.left, cb);
-            this.forEachCallInExpr(p.right, cb);
+    private forEachCallInPredicate(pred: Predicate, visitor: (call: FunctionCallExpression) => void): void {
+        if (pred.kind === "comparison") {
+            this.forEachCallInExpression(pred.left, visitor);
+            this.forEachCallInExpression(pred.right, visitor);
             return;
         }
 
-        const kids: Predicate[] =
-            p.kind === "and" || p.kind === "or" ? [p.left, p.right] :
-                p.kind === "not" ? [p.predicate] :
-                    p.kind === "paren" ? [p.inner] :
-                        p.kind === "quantifier" ? [p.body] :
+        const children: Predicate[] =
+            pred.kind === "and" || pred.kind === "or" ? [pred.left, pred.right] :
+                pred.kind === "not" ? [pred.predicate] :
+                    pred.kind === "paren" ? [pred.inner] :
+                        pred.kind === "quantifier" ? [pred.body] :
                             [];
 
-        kids.forEach(k => this.forEachCallInPred(k, cb));
+        children.forEach(child => this.forEachCallInPredicate(child, visitor));
     }
 
-    private subsForCall(callee: AnnotatedFunctionDef, call: FuncCallExpr): Map<string, Expr> {
-        return new Map(callee.parameters.map((p, i) => [p.name, call.args[i]] as const));
+    private createSubstitutionMapForCall(calleeDef: AnnotatedFunctionDef, callExpr: FunctionCallExpression): Map<string, Expr> {
+        return new Map(calleeDef.parameters.map((param, index) => [param.name, callExpr.args[index]] as const));
     }
 
     private guardCallPreconditions(pred: Predicate): Predicate {
-        const keep = <T extends Predicate>(out: T): T => {
-            copyMeta(out, pred);
-            return out;
+        const keepMetadata = <T extends Predicate>(output: T): T => {
+            copyMetadata(output, pred);
+            return output;
         };
 
         switch (pred.kind) {
             case "comparison": {
-                let guarded: Predicate = pred;
+                let guardedPredicate: Predicate = pred;
 
-                this.forEachCallInExpr(pred.left, (c) => {
-                    const callee = this.funMap.get(c.name);
-                    const pre = callee?.pre ?? TRUE_PRED;
-                    guarded = this.makeAnd(this.substPredicate(pre, this.subsForCall(callee!, c)), guarded);
-                });
-                this.forEachCallInExpr(pred.right, (c) => {
-                    const callee = this.funMap.get(c.name);
-                    const pre = callee?.pre ?? TRUE_PRED;
-                    guarded = this.makeAnd(this.substPredicate(pre, this.subsForCall(callee!, c)), guarded);
-                });
+                const wrapWithPrecondition = (callExpr: FunctionCallExpression) => {
+                    const calleeDef = this.functionDefinitionMap.get(callExpr.name);
+                    const calleePre = calleeDef?.pre ?? TRUE_PREDICATE;
+                    const subs = this.createSubstitutionMapForCall(calleeDef!, callExpr);
+                    const substitutedPre = this.substitutePredicate(calleePre, subs);
+                    guardedPredicate = this.createConjunction(substitutedPre, guardedPredicate);
+                };
 
-                copyMeta(guarded, pred);
-                return guarded;
+                this.forEachCallInExpression(pred.left, wrapWithPrecondition);
+                this.forEachCallInExpression(pred.right, wrapWithPrecondition);
+
+                copyMetadata(guardedPredicate, pred);
+                return guardedPredicate;
             }
 
             case "and":
             case "or":
-                return keep({
+                return keepMetadata({
                     kind: pred.kind,
                     left: this.guardCallPreconditions(pred.left),
                     right: this.guardCallPreconditions(pred.right),
                 });
 
             case "not":
-                return keep({
+                return keepMetadata({
                     kind: "not",
                     predicate: this.guardCallPreconditions(pred.predicate),
                 });
 
             case "paren": {
                 const inner = this.guardCallPreconditions(pred.inner);
-                copyMeta(inner, pred);
+                copyMetadata(inner, pred);
                 return inner;
             }
 
@@ -223,154 +226,162 @@ class FunctionVerifier {
         }
     }
 
-    private subsFromAssign(s: AssignExpr): Map<string, Expr> {
+    private createSubstitutionMapFromAssignment(stmt: AssignmentStatement): Map<string, Expr> {
         return new Map(
-            s.targets.flatMap((t, i) => (t.type === "lvar" ? [[t.name, s.exprs[i]] as const] : []))
+            stmt.targets.flatMap((target, index) => (target.type === "lvar" ? [[target.name, stmt.exprs[index]] as const] : []))
         );
     }
 
-    private wpStatement(
-        f: AnnotatedFunctionDef,
+    private computeWeakestPrecondition(
+        funcDef: AnnotatedFunctionDef,
         stmt: Statement,
-        post: Predicate
+        postCondition: Predicate
     ): { pre: Predicate; vcs: Predicate[] } {
         switch (stmt.type) {
             case "expr":
-                return { pre: post, vcs: [] };
+                return { pre: postCondition, vcs: [] };
 
             case "assign": {
-                return { pre: this.substPredicate(post, this.subsFromAssign(stmt)), vcs: [] };
+                const subs = this.createSubstitutionMapFromAssignment(stmt);
+                return { pre: this.substitutePredicate(postCondition, subs), vcs: [] };
             }
 
             case "block": {
-                let current = post;
-                let allVcs: Predicate[] = [];
+                let currentPostCondition = postCondition;
+                let accumulatedVCs: Predicate[] = [];
 
                 for (let i = stmt.stmts.length - 1; i >= 0; i--) {
-                    const s = stmt.stmts[i];
+                    const statement = stmt.stmts[i];
 
-                    const r = this.wpStatement(f, s, current);
-                    current = r.pre;
+                    const result = this.computeWeakestPrecondition(funcDef, statement, currentPostCondition);
+                    currentPostCondition = result.pre;
 
-                    if (s.type === "assign") {
-                        const subs = this.subsFromAssign(s);
-                        if (subs.size) allVcs = allVcs.map(vc => this.substPredicate(vc, subs));
+                    if (statement.type === "assign") {
+                        const subs = this.createSubstitutionMapFromAssignment(statement);
+                        if (subs.size) {
+                            accumulatedVCs = accumulatedVCs.map(vc => this.substitutePredicate(vc, subs));
+                        }
                     }
 
-                    allVcs.push(...r.vcs);
+                    accumulatedVCs.push(...result.vcs);
                 }
 
-                return { pre: current, vcs: allVcs };
+                return { pre: currentPostCondition, vcs: accumulatedVCs };
             }
 
             case "if": {
-                const condPred = this.conditionToPredicate(stmt.condition);
-                const thenRes = this.wpStatement(f, stmt.then, post);
-                const elseRes = stmt.else
-                    ? this.wpStatement(f, stmt.else, post)
-                    : { pre: post, vcs: [] };
+                const conditionPredicate = this.convertConditionToPredicate(stmt.condition);
+                const thenResult = this.computeWeakestPrecondition(funcDef, stmt.then, postCondition);
+                const elseResult = stmt.else
+                    ? this.computeWeakestPrecondition(funcDef, stmt.else, postCondition)
+                    : { pre: postCondition, vcs: [] };
 
-                const preThen = thenRes.pre;
-                const preElse = elseRes.pre;
+                const thenPre = thenResult.pre;
+                const elsePre = elseResult.pre;
 
-                const pre = this.makeAnd(
-                    this.makeImplies(condPred, preThen),
-                    this.makeImplies(this.makeNot(condPred), preElse)
+                const pre = this.createConjunction(
+                    this.createImplication(conditionPredicate, thenPre),
+                    this.createImplication(this.createNegation(conditionPredicate), elsePre)
                 );
 
-                return { pre, vcs: [...thenRes.vcs, ...elseRes.vcs] };
+                return { pre, vcs: [...thenResult.vcs, ...elseResult.vcs] };
             }
 
             case "while": {
-                const inv = stmt.invariant ?? TRUE_PRED;
-                const condPred = this.conditionToPredicate(stmt.condition);
+                const invariant = stmt.invariant ?? TRUE_PREDICATE;
+                const conditionPredicate = this.convertConditionToPredicate(stmt.condition);
 
-                const bodyResInv = this.wpStatement(f, stmt.body, inv);
-                const vcPreserve = this.makeImplies(
-                    this.makeAnd(inv, condPred),
-                    bodyResInv.pre
+                // 1. Invariant is preserved by the body: (Inv && Cond) => WP(Body, Inv)
+                const bodyResultInvariant = this.computeWeakestPrecondition(funcDef, stmt.body, invariant);
+                const vcPreserveInvariant = this.createImplication(
+                    this.createConjunction(invariant, conditionPredicate),
+                    bodyResultInvariant.pre
                 );
 
-                const postAfterBody = this.makeAnd(
-                    inv,
-                    this.makeImplies(this.makeNot(condPred), post)
+                // 2. Loop exit logic
+                // Post-condition after loop body executes one more time and exits: Inv && (!Cond => Post)
+                const postAfterBody = this.createConjunction(
+                    invariant,
+                    this.createImplication(this.createNegation(conditionPredicate), postCondition)
                 );
-                const bodyResExit = this.wpStatement(f, stmt.body, postAfterBody);
-                const vcOneStepExit = this.makeImplies(
-                    this.makeAnd(inv, condPred),
-                    bodyResExit.pre
-                );
-
-                const vcExit = this.makeImplies(
-                    this.makeAnd(inv, this.makeNot(condPred)),
-                    post
+                
+                const bodyResultExit = this.computeWeakestPrecondition(funcDef, stmt.body, postAfterBody);
+                const vcOneStepExit = this.createImplication(
+                    this.createConjunction(invariant, conditionPredicate),
+                    bodyResultExit.pre
                 );
 
-                const invPos = getPos(inv);
-                const postPos = getPos(post);
+                // 3. Exit condition: (Inv && !Cond) => Post
+                const vcLoopExit = this.createImplication(
+                    this.createConjunction(invariant, this.createNegation(conditionPredicate)),
+                    postCondition
+                );
 
-                setBlame(vcPreserve, invPos);
-                setBlame(vcOneStepExit, invPos);
-                setBlame(vcExit, postPos ?? invPos);
+                const invLocation = getSourceLocation(invariant);
+                const postLocation = getSourceLocation(postCondition);
+
+                attachBlame(vcPreserveInvariant, invLocation);
+                attachBlame(vcOneStepExit, invLocation);
+                attachBlame(vcLoopExit, postLocation ?? invLocation);
 
                 return {
-                    pre: inv,
+                    pre: invariant,
                     vcs: [
-                        vcPreserve,
+                        vcPreserveInvariant,
                         vcOneStepExit,
-                        vcExit,
-                        ...bodyResInv.vcs,
-                        ...bodyResExit.vcs,
+                        vcLoopExit,
+                        ...bodyResultInvariant.vcs,
+                        ...bodyResultExit.vcs,
                     ],
                 };
             }
         }
     }
 
-    private conditionToPredicate(c: Condition): Predicate {
-        switch (c.kind) {
+    private convertConditionToPredicate(cond: Condition): Predicate {
+        switch (cond.kind) {
             case "implies":
-                return this.makeImplies(this.conditionToPredicate(c.left), this.conditionToPredicate(c.right));
+                return this.createImplication(this.convertConditionToPredicate(cond.left), this.convertConditionToPredicate(cond.right));
             case "not":
-                return this.makeNot(this.conditionToPredicate(c.condition));
+                return this.createNegation(this.convertConditionToPredicate(cond.condition));
             case "and":
-                return this.makeAnd(this.conditionToPredicate(c.left), this.conditionToPredicate(c.right));
+                return this.createConjunction(this.convertConditionToPredicate(cond.left), this.convertConditionToPredicate(cond.right));
             case "or":
-                return this.makeOr(this.conditionToPredicate(c.left), this.conditionToPredicate(c.right));
+                return this.createDisjunction(this.convertConditionToPredicate(cond.left), this.convertConditionToPredicate(cond.right));
             case "paren":
-                return this.conditionToPredicate(c.inner);
+                return this.convertConditionToPredicate(cond.inner);
             default:
-                return c as Predicate;
+                return cond as Predicate;
         }
     }
 
-    private makeAnd(a: Predicate, b: Predicate): Predicate {
+    private createConjunction(a: Predicate, b: Predicate): Predicate {
         if (a.kind === "true") return b;
         if (b.kind === "true") return a;
-        if (a.kind === "false" || b.kind === "false") return FALSE_PRED;
+        if (a.kind === "false" || b.kind === "false") return FALSE_PREDICATE;
         return { kind: "and", left: a, right: b };
     }
 
-    private makeOr(a: Predicate, b: Predicate): Predicate {
+    private createDisjunction(a: Predicate, b: Predicate): Predicate {
         if (a.kind === "false") return b;
         if (b.kind === "false") return a;
-        if (a.kind === "true" || b.kind === "true") return TRUE_PRED;
+        if (a.kind === "true" || b.kind === "true") return TRUE_PREDICATE;
         return { kind: "or", left: a, right: b };
     }
 
-    private makeNot(a: Predicate): Predicate {
-        if (a.kind === "true") return FALSE_PRED;
-        if (a.kind === "false") return TRUE_PRED;
+    private createNegation(a: Predicate): Predicate {
+        if (a.kind === "true") return FALSE_PREDICATE;
+        if (a.kind === "false") return TRUE_PREDICATE;
         return { kind: "not", predicate: a };
     }
 
-    private makeImplies(a: Predicate, b: Predicate): Predicate {
-        return this.makeOr(this.makeNot(a), b);
+    private createImplication(a: Predicate, b: Predicate): Predicate {
+        return this.createDisjunction(this.createNegation(a), b);
     }
 
-    private rewriteExpr(
+    private rewriteExpression(
         expr: Expr,
-        opts: {
+        visitors: {
             var?: (name: string) => Expr | undefined;
             call?: (name: string, args: Expr[]) => Expr | undefined;
         }
@@ -380,36 +391,36 @@ class FunctionVerifier {
                 return expr;
 
             case "var": {
-                const r = opts.var?.(expr.name);
-                return r ?? expr;
+                const replacement = visitors.var?.(expr.name);
+                return replacement ?? expr;
             }
 
             case "neg":
-                return { type: "neg", arg: this.rewriteExpr(expr.arg, opts) } as Expr;
+                return { type: "neg", arg: this.rewriteExpression(expr.arg, visitors) } as Expr;
 
             case "bin":
                 return {
                     type: "bin",
                     op: expr.op,
-                    left: this.rewriteExpr(expr.left, opts),
-                    right: this.rewriteExpr(expr.right, opts),
+                    left: this.rewriteExpression(expr.left, visitors),
+                    right: this.rewriteExpression(expr.right, visitors),
                 } as Expr;
 
             case "arraccess":
                 return {
                     type: "arraccess",
                     name: expr.name,
-                    index: this.rewriteExpr(expr.index, opts),
+                    index: this.rewriteExpression(expr.index, visitors),
                 };
 
             case "funccall": {
-                const args = expr.args.map(a => this.rewriteExpr(a, opts));
-                const replaced = opts.call?.(expr.name, args);
+                const processedArgs = expr.args.map(arg => this.rewriteExpression(arg, visitors));
+                const replacement = visitors.call?.(expr.name, processedArgs);
                 return (
-                    replaced ?? {
+                    replacement ?? {
                         type: "funccall",
                         name: expr.name,
-                        args,
+                        args: processedArgs,
                     }
                 );
             }
@@ -418,12 +429,12 @@ class FunctionVerifier {
 
     private rewritePredicate(
         pred: Predicate,
-        bound: Set<string>,
-        mapExpr: (e: Expr, bound: Set<string>) => Expr
+        boundVariables: Set<string>,
+        mapExpression: (e: Expr, bound: Set<string>) => Expr
     ): Predicate {
-        const keep = <T extends Predicate>(out: T): T => {
-            copyMeta(out, pred);
-            return out;
+        const keepMetadata = <T extends Predicate>(output: T): T => {
+            copyMetadata(output, pred);
+            return output;
         };
 
         switch (pred.kind) {
@@ -433,233 +444,233 @@ class FunctionVerifier {
                 return pred;
 
             case "comparison":
-                return keep({
+                return keepMetadata({
                     kind: "comparison",
                     op: pred.op,
-                    left: mapExpr(pred.left, bound),
-                    right: mapExpr(pred.right, bound),
+                    left: mapExpression(pred.left, boundVariables),
+                    right: mapExpression(pred.right, boundVariables),
                 });
 
             case "not":
-                return keep({
+                return keepMetadata({
                     kind: "not",
-                    predicate: this.rewritePredicate(pred.predicate, bound, mapExpr),
+                    predicate: this.rewritePredicate(pred.predicate, boundVariables, mapExpression),
                 });
 
             case "and":
             case "or":
-                return keep({
+                return keepMetadata({
                     kind: pred.kind,
-                    left: this.rewritePredicate(pred.left, bound, mapExpr),
-                    right: this.rewritePredicate(pred.right, bound, mapExpr),
+                    left: this.rewritePredicate(pred.left, boundVariables, mapExpression),
+                    right: this.rewritePredicate(pred.right, boundVariables, mapExpression),
                 });
 
             case "paren": {
-                const inner = this.rewritePredicate(pred.inner, bound, mapExpr);
-                copyMeta(inner, pred);
+                const inner = this.rewritePredicate(pred.inner, boundVariables, mapExpression);
+                copyMetadata(inner, pred);
                 return inner;
             }
 
             case "quantifier": {
-                const innerBound = new Set(bound);
+                const innerBound = new Set(boundVariables);
                 innerBound.add(pred.varName);
 
-                return keep({
+                return keepMetadata({
                     kind: "quantifier",
                     quant: pred.quant,
                     varName: pred.varName,
                     varType: pred.varType,
-                    body: this.rewritePredicate(pred.body, innerBound, mapExpr),
+                    body: this.rewritePredicate(pred.body, innerBound, mapExpression),
                 });
             }
         }
     }
 
-    private substExpr(expr: Expr, subs: Map<string, Expr>): Expr {
-        return this.rewriteExpr(expr, { var: (name) => subs.get(name) });
+    private substituteExpression(expr: Expr, subs: Map<string, Expr>): Expr {
+        return this.rewriteExpression(expr, { var: (name) => subs.get(name) });
     }
 
-    private substPredicate(pred: Predicate, subs: Map<string, Expr>): Predicate {
+    private substitutePredicate(pred: Predicate, subs: Map<string, Expr>): Predicate {
         return this.rewritePredicate(pred, new Set(), (e, bound) =>
-            this.rewriteExpr(e, {
+            this.rewriteExpression(e, {
                 var: (name) => (bound.has(name) ? undefined : subs.get(name)),
             })
         );
     }
 
-    private inlineExpr(expr: Expr): Expr {
-        return this.rewriteExpr(expr, {
+    private inlineFunctionCalls(expr: Expr): Expr {
+        return this.rewriteExpression(expr, {
             call: (name, args) => {
-                const spec = this.defSpecs.get(name);
+                const spec = this.definitionalSpecs.get(name);
                 if (!spec) return undefined;
 
                 const subs = new Map<string, Expr>();
                 for (let i = 0; i < spec.params.length; i++) {
                     subs.set(spec.params[i], args[i]);
                 }
-                return this.substExpr(spec.resultExpr, subs);
+                return this.substituteExpression(spec.resultExpr, subs);
             },
         });
     }
 
-    private varName(f: AnnotatedFunctionDef, name: string): string {
-        return f.name + "_" + name;
+    private generateScopedVarName(funcDef: AnnotatedFunctionDef, varName: string): string {
+        return funcDef.name + "_" + varName;
     }
 
-    private exprKey(e: Expr): string {
+    private getExpressionKey(e: Expr): string {
         switch (e.type) {
             case "num":
                 return `#${e.value}`;
             case "var":
                 return `$${e.name}`;
             case "neg":
-                return `(-${this.exprKey(e.arg)})`;
+                return `(-${this.getExpressionKey(e.arg)})`;
             case "bin":
-                return `(${this.exprKey(e.left)}${e.op}${this.exprKey(e.right)})`;
+                return `(${this.getExpressionKey(e.left)}${e.op}${this.getExpressionKey(e.right)})`;
             case "arraccess":
-                return `${e.name}[${this.exprKey(e.index)}]`;
+                return `${e.name}[${this.getExpressionKey(e.index)}]`;
             case "funccall":
-                return `${e.name}(${e.args.map(a => this.exprKey(a)).join(",")})`;
+                return `${e.name}(${e.args.map(a => this.getExpressionKey(a)).join(",")})`;
         }
     }
 
-    private resolveVar(f: AnnotatedFunctionDef, name: string, scope: Map<string, any>): any {
-        return scope.get(name) ?? this.ctx.Int.const(this.varName(f, name));
+    private resolveZ3Var(funcDef: AnnotatedFunctionDef, name: string, scope: Map<string, any>): any {
+        return scope.get(name) ?? this.z3Context.Int.const(this.generateScopedVarName(funcDef, name));
     }
 
-    private exprToZ3(f: AnnotatedFunctionDef, expr: Expr, scope: Map<string, any> = new Map()): Arith {
-        expr = this.inlineExpr(expr);
+    private convertExpressionToZ3(funcDef: AnnotatedFunctionDef, expr: Expr, scope: Map<string, any> = new Map()): Arith {
+        expr = this.inlineFunctionCalls(expr);
         switch (expr.type) {
             case "num":
-                return this.ctx.Int.val(expr.value);
+                return this.z3Context.Int.val(expr.value);
             case "var":
-                return this.resolveVar(f, expr.name, scope);
+                return this.resolveZ3Var(funcDef, expr.name, scope);
             case "neg":
-                return this.ctx.Int.val(0).sub(this.exprToZ3(f, expr.arg, scope));
+                return this.z3Context.Int.val(0).sub(this.convertExpressionToZ3(funcDef, expr.arg, scope));
             case "bin": {
-                const l = this.exprToZ3(f, expr.left, scope);
-                const r = this.exprToZ3(f, expr.right, scope);
+                const left = this.convertExpressionToZ3(funcDef, expr.left, scope);
+                const right = this.convertExpressionToZ3(funcDef, expr.right, scope);
                 switch (expr.op) {
-                    case "+": return l.add(r);
-                    case "-": return l.sub(r);
-                    case "*": return l.mul(r);
-                    case "/": return l.div(r);
+                    case "+": return left.add(right);
+                    case "-": return left.sub(right);
+                    case "*": return left.mul(right);
+                    case "/": return left.div(right);
                 }
             }
             case "funccall": {
-                const func = this.getFunc(expr.name, expr.args.length, "int");
-                return func.call(...expr.args.map(a => this.exprToZ3(f, a, scope)));
+                const z3Func = this.getZ3FunctionDeclaration(expr.name, expr.args.length, "int");
+                return z3Func.call(...expr.args.map(arg => this.convertExpressionToZ3(funcDef, arg, scope)));
             }
             case "arraccess": {
-                const arr = this.ctx.Array.const(this.varName(f, expr.name), this.ctx.Int.sort(), this.ctx.Int.sort());
-                const idx = this.exprToZ3(f, expr.index, scope);
-                return arr.select(idx);
+                const z3Array = this.z3Context.Array.const(this.generateScopedVarName(funcDef, expr.name), this.z3Context.Int.sort(), this.z3Context.Int.sort());
+                const z3Index = this.convertExpressionToZ3(funcDef, expr.index, scope);
+                return z3Array.select(z3Index);
             }
         }
     }
 
-    private predicateToZ3(f: AnnotatedFunctionDef, pred: Predicate, scope: Map<string, any> = new Map()): Bool {
+    private convertPredicateToZ3(funcDef: AnnotatedFunctionDef, pred: Predicate, scope: Map<string, any> = new Map()): Bool {
         switch (pred.kind) {
-            case "true": return this.ctx.Bool.val(true);
-            case "false": return this.ctx.Bool.val(false);
+            case "true": return this.z3Context.Bool.val(true);
+            case "false": return this.z3Context.Bool.val(false);
             case "comparison": {
-                const l = this.exprToZ3(f, pred.left, scope);
-                const r = this.exprToZ3(f, pred.right, scope);
+                const left = this.convertExpressionToZ3(funcDef, pred.left, scope);
+                const right = this.convertExpressionToZ3(funcDef, pred.right, scope);
                 switch (pred.op) {
-                    case "==": return l.eq(r);
-                    case "!=": return this.ctx.Not(l.eq(r));
-                    case ">": return l.gt(r);
-                    case "<": return l.lt(r);
-                    case ">=": return l.ge(r);
-                    case "<=": return l.le(r);
+                    case "==": return left.eq(right);
+                    case "!=": return this.z3Context.Not(left.eq(right));
+                    case ">": return left.gt(right);
+                    case "<": return left.lt(right);
+                    case ">=": return left.ge(right);
+                    case "<=": return left.le(right);
                 }
             }
             case "not":
-                return this.ctx.Not(this.predicateToZ3(f, pred.predicate, scope));
+                return this.z3Context.Not(this.convertPredicateToZ3(funcDef, pred.predicate, scope));
             case "and":
-                return this.ctx.And(this.predicateToZ3(f, pred.left, scope), this.predicateToZ3(f, pred.right, scope));
+                return this.z3Context.And(this.convertPredicateToZ3(funcDef, pred.left, scope), this.convertPredicateToZ3(funcDef, pred.right, scope));
             case "or":
-                return this.ctx.Or(this.predicateToZ3(f, pred.left, scope), this.predicateToZ3(f, pred.right, scope));
+                return this.z3Context.Or(this.convertPredicateToZ3(funcDef, pred.left, scope), this.convertPredicateToZ3(funcDef, pred.right, scope));
             case "paren":
-                return this.predicateToZ3(f, pred.inner, scope);
+                return this.convertPredicateToZ3(funcDef, pred.inner, scope);
 
             case "quantifier": {
-                const z3Var = this.ctx.Int.const(pred.varName);
+                const z3Var = this.z3Context.Int.const(pred.varName);
 
                 const newScope = new Map(scope);
                 newScope.set(pred.varName, z3Var);
 
-                const body = this.predicateToZ3(f, pred.body, newScope);
+                const body = this.convertPredicateToZ3(funcDef, pred.body, newScope);
 
                 if (pred.quant === "forall") {
-                    return this.ctx.ForAll([z3Var], body);
+                    return this.z3Context.ForAll([z3Var], body);
                 } else {
-                    return this.ctx.Exists([z3Var], body);
+                    return this.z3Context.Exists([z3Var], body);
                 }
             }
 
             case "formula": {
-                const func = this.getFunc(pred.name, pred.parameters.length, "bool");
-                return func.call(...pred.parameters.map(p => this.resolveVar(f, p.name, scope)));
+                const z3Func = this.getZ3FunctionDeclaration(pred.name, pred.parameters.length, "bool");
+                return z3Func.call(...pred.parameters.map(p => this.resolveZ3Var(funcDef, p.name, scope)));
             }
         }
     }
 
-    private contractInstancesForVC(vc: Predicate): Predicate[] {
-        const seen = new Set<string>();
-        const inst: Predicate[] = [];
+    private generateContractAxiomsForVC(verificationCondition: Predicate): Predicate[] {
+        const seenCalls = new Set<string>();
+        const axioms: Predicate[] = [];
 
-        this.forEachCallInPred(vc, (c) => {
-            const key = this.exprKey(c);
-            if (seen.has(key)) return;
-            seen.add(key);
+        this.forEachCallInPredicate(verificationCondition, (callExpr) => {
+            const key = this.getExpressionKey(callExpr);
+            if (seenCalls.has(key)) return;
+            seenCalls.add(key);
 
-            const callee = this.funMap.get(c.name);
-            if (!callee?.post || callee.returns.length !== 1) return;
+            const calleeDef = this.functionDefinitionMap.get(callExpr.name);
+            if (!calleeDef?.post || calleeDef.returns.length !== 1) return;
 
-            const pre = callee.pre ?? TRUE_PRED;
-            const post = callee.post;
+            const pre = calleeDef.pre ?? TRUE_PREDICATE;
+            const post = calleeDef.post;
 
-            const subs = this.subsForCall(callee, c);
-            subs.set(callee.returns[0].name, c);
+            const subs = this.createSubstitutionMapForCall(calleeDef, callExpr);
+            subs.set(calleeDef.returns[0].name, callExpr);
 
-            const preI = this.substPredicate(pre, subs);
-            const postI = this.substPredicate(post, subs);
-            const guardedPost = this.guardCallPreconditions(postI);
+            const instantiatedPre = this.substitutePredicate(pre, subs);
+            const instantiatedPost = this.substitutePredicate(post, subs);
+            const guardedPost = this.guardCallPreconditions(instantiatedPost);
 
-            inst.push(this.makeImplies(preI, guardedPost));
+            axioms.push(this.createImplication(instantiatedPre, guardedPost));
         });
 
-        return inst;
+        return axioms;
     }
 
-    private pickViolationPos(f: AnnotatedFunctionDef, model: Model, pred: Predicate): SourceRange | undefined {
-        let best: { pos: SourceRange; span: number; depth: number } | undefined;
+    private findViolationLocation(funcDef: AnnotatedFunctionDef, model: Model, pred: Predicate): SourceRange | undefined {
+        let bestCandidate: { pos: SourceRange; span: number; depth: number } | undefined;
 
-        const spanOf = (pos: SourceRange): number => {
-            const sl = pos.startLine ?? 0;
-            const sc = pos.startCol ?? 0;
-            const el = pos.endLine ?? sl;
-            const ec = pos.endCol ?? sc;
-            return Math.max(0, el - sl) * 1_000_000 + Math.max(0, ec - sc);
+        const calculateSpan = (pos: SourceRange): number => {
+            const startLine = pos.startLine ?? 0;
+            const startCol = pos.startCol ?? 0;
+            const endLine = pos.endLine ?? startLine;
+            const endCol = pos.endCol ?? startCol;
+            return Math.max(0, endLine - startLine) * 1_000_000 + Math.max(0, endCol - startCol);
         };
 
         const isFalseInModel = (p: Predicate): boolean => {
             try {
-                const z3p = this.predicateToZ3(f, p, new Map());
-                const v: any = model.eval(z3p, true);
-                return v?.toString?.() === "false";
+                const z3Predicate = this.convertPredicateToZ3(funcDef, p, new Map());
+                const evaluationResult: any = model.eval(z3Predicate, true);
+                return evaluationResult?.toString?.() === "false";
             } catch {
                 return false;
             }
         };
 
         const visit = (p: Predicate, depth: number) => {
-            const pos = getPos(p);
+            const pos = getSourceLocation(p);
             if (pos && isFalseInModel(p)) {
-                const span = spanOf(pos);
-                if (!best || span < best.span || (span === best.span && depth > best.depth)) {
-                    best = { pos, span, depth };
+                const span = calculateSpan(pos);
+                if (!bestCandidate || span < bestCandidate.span || (span === bestCandidate.span && depth > bestCandidate.depth)) {
+                    bestCandidate = { pos, span, depth };
                 }
             }
 
@@ -682,54 +693,54 @@ class FunctionVerifier {
         };
 
         visit(pred, 0);
-        return best?.pos;
+        return bestCandidate?.pos;
     }
 
-    private async prove(vc: Predicate, f: AnnotatedFunctionDef): Promise<void> {
-        const solver = new this.ctx.Solver();
+    private async proveGoal(verificationCondition: Predicate, funcDef: AnnotatedFunctionDef): Promise<void> {
+        const solver = new this.z3Context.Solver();
         const scope = new Map<string, any>();
 
-        const guarded = this.guardCallPreconditions(vc);
+        const guardedVC = this.guardCallPreconditions(verificationCondition);
 
-        this.contractInstancesForVC(guarded).forEach(a =>
-            solver.add(this.predicateToZ3(f, a, scope))
+        this.generateContractAxiomsForVC(guardedVC).forEach(axiom =>
+            solver.add(this.convertPredicateToZ3(funcDef, axiom, scope))
         );
 
-        solver.add(this.ctx.Not(this.predicateToZ3(f, guarded, scope)));
+        solver.add(this.z3Context.Not(this.convertPredicateToZ3(funcDef, guardedVC, scope)));
 
-        let res: string;
+        let result: string;
         try {
-            res = await solver.check();
+            result = await solver.check();
         } catch (e: any) {
             const msg = e instanceof Error ? e.message : String(e);
             fail(
                 ErrorCode.VerificationError,
-                `Z3 error while verifying function "${f.name}": ${msg}`,
-                getPos(vc)
+                `Z3 error while verifying function "${funcDef.name}": ${msg}`,
+                getSourceLocation(verificationCondition)
             );
         }
 
-        if (res === "unsat") return;
+        if (result === "unsat") return;
 
-        if (res === "unknown") {
+        if (result === "unknown") {
             fail(
                 ErrorCode.VerificationError,
-                `Z3 returned "unknown" while verifying function "${f.name}".`,
-                getPos(vc)
+                `Z3 returned "unknown" while verifying function "${funcDef.name}".`,
+                getSourceLocation(verificationCondition)
             );
         }
 
         const model: Model = solver.model();
-        const msg = printFuncCall(this.ctx, f, model);
+        const msg = printFuncCall(this.z3Context, funcDef, model);
 
         const pos =
-            this.pickViolationPos(f, model, guarded) ??
-            getPos(guarded) ??
-            getPos(vc);
+            this.findViolationLocation(funcDef, model, guardedVC) ??
+            getSourceLocation(guardedVC) ??
+            getSourceLocation(verificationCondition);
 
         fail(
             ErrorCode.VerificationError,
-            `Verification failed for function "${f.name}".\n${msg}`,
+            `Verification failed for function "${funcDef.name}".\n${msg}`,
             pos
         );
     }
