@@ -1,4 +1,4 @@
-import { MatchResult, Semantics } from 'ohm-js';
+import { Interval, MatchResult, Semantics } from 'ohm-js';
 
 import grammar, { FunnierActionDict } from './funnier.ohm-bundle';
 
@@ -44,24 +44,25 @@ interface NodeLike {
   parse?: () => unknown;
 }
 
-function getLocFromNode(node?: NodeLike | null): SourceRange | undefined {
-  const src = node?.source;
-  if (!src || typeof src.getLineAndColumn !== "function") return undefined;
-
-  const start = src.getLineAndColumn(src.startIdx);
-  const end = src.getLineAndColumn(src.endIdx);
-
-  return {
-    startLine: start.lineNum,
-    startCol: start.colNum,
-    endLine: end.lineNum,
-    endCol: end.colNum,
-  };
+function getLocFromNode(node: any): SourceRange | undefined {
+  const interval = node.source as Interval;
+    const start = interval.getLineAndColumn();
+    const endInterval = interval.collapsedRight();
+    const end = endInterval.getLineAndColumn();
+    return {
+        startLine: start.lineNum,
+        startCol: start.colNum,
+        endLine: end.lineNum,
+        endCol: end.colNum,
+    };
 }
 
-function attachLoc<T extends object>(value: T, node?: NodeLike | null): T & { loc?: SourceRange } {
-  const loc = getLocFromNode(node);
-  return loc ? ({ ...value, loc }) : (value as T & { loc?: SourceRange });
+function attachLoc<T extends object>(value: T, node: any): T {
+    const loc = getLocFromNode(node);
+    if (loc) {
+        (value as any).loc = loc;
+    }
+    return value;
 }
 
 function parseAndAttachPredicate(node?: NodeLike | null): Predicate {
